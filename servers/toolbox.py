@@ -31,7 +31,7 @@ import operator
 import os
 import re
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
 
 mcp = FastMCP("toolbox")
 
