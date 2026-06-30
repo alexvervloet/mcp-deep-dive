@@ -29,8 +29,8 @@ we don't need here. (A newer 2.x SDK renames this; this repo targets 1.x.)
 
 import asyncio
 
-from mcp import ClientSession
-from mcp.client.streamable_http import streamablehttp_client
+from mcp import ClientSession  # type: ignore[import-untyped]
+from mcp.client.streamable_http import streamablehttp_client  # type: ignore[import-untyped]
 
 URL = "http://127.0.0.1:8000/mcp"
 
