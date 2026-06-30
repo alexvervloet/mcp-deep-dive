@@ -38,8 +38,8 @@ import sys
 from contextlib import AsyncExitStack
 from dataclasses import dataclass
 
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
+from mcp import ClientSession, StdioServerParameters  # type: ignore[import-untyped]
+from mcp.client.stdio import stdio_client  # type: ignore[import-untyped]
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -89,6 +89,7 @@ class MCPClient:
         read, write = await self._stack.enter_async_context(stdio_client(self._params))
         self.session = await self._stack.enter_async_context(ClientSession(read, write))
         # The handshake: negotiate protocol version + capabilities. Always first.
+        assert self.session is not None
         await self.session.initialize()
         return self
 
@@ -102,6 +103,7 @@ class MCPClient:
 
     async def list_tools(self) -> list[ToolInfo]:
         """Ask the server what tools it offers (the `tools/list` method)."""
+        assert self.session is not None
         resp = await self.session.list_tools()
         return [
             ToolInfo(name=t.name, description=t.description or "", input_schema=t.inputSchema)
@@ -115,6 +117,7 @@ class MCPClient:
         text-only tools we just join the text. `result.isError` is True when the
         tool raised — we surface that inline so a caller (or model) can react.
         """
+        assert self.session is not None
         result = await self.session.call_tool(name, arguments)
         text = "".join(getattr(block, "text", "") for block in result.content)
         if getattr(result, "isError", False):
@@ -125,11 +128,13 @@ class MCPClient:
 
     async def list_resources(self) -> list[tuple[str, str]]:
         """List the server's static resources as (uri, name) pairs."""
+        assert self.session is not None
         resp = await self.session.list_resources()
         return [(str(r.uri), r.name or "") for r in resp.resources]
 
     async def read_resource(self, uri: str) -> str:
         """Read a resource by URI (`resources/read`) and return its text."""
+        assert self.session is not None
         resp = await self.session.read_resource(uri)
         return "".join(getattr(block, "text", "") for block in resp.contents)
 
@@ -137,6 +142,7 @@ class MCPClient:
 
     async def list_prompts(self) -> list[tuple[str, str]]:
         """List the server's prompt templates as (name, description) pairs."""
+        assert self.session is not None
         resp = await self.session.list_prompts()
         return [(p.name, p.description or "") for p in resp.prompts]
 
@@ -146,6 +152,7 @@ class MCPClient:
         A prompt comes back as a list of role-tagged messages; for our simple
         single-message templates we join the text of each message.
         """
+        assert self.session is not None
         resp = await self.session.get_prompt(name, arguments or {})
         parts = []
         for msg in resp.messages:
