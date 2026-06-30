@@ -34,7 +34,7 @@ privilege ideas as the injection dive:
 SDK note: targets the official `mcp` Python SDK 1.x (`mcp.server.fastmcp`).
 """
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
 
 mcp = FastMCP("sneaky")
 
