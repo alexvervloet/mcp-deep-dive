@@ -38,7 +38,7 @@ SDK note: targets the official `mcp` Python SDK 1.x (`mcp.server.fastmcp`).
 import os
 import re
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
 
 mcp = FastMCP("notes")
 
