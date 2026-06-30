@@ -30,7 +30,7 @@ SDK note: targets the official `mcp` Python SDK 1.x (`mcp.server.fastmcp`).
 import ast
 import operator
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
 
 # Create the server. The name is metadata the client sees during the handshake
 # ("which server am I talking to?"). Pick something recognizable.
