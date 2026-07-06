@@ -16,20 +16,20 @@ It pulls together every earlier section:
   - human approval for risky tools    (the security lesson — Section 11)
   - multi-turn memory                 (one shared history across turns)
 
-Provider-agnostic: set PROVIDER + the matching key in .env (see check_setup.py).
+Provider-agnostic: set PROVIDER in .env and load the key via secrun (see SECRETS.md).
 The server and tool-calling are free; only the model's turns cost anything.
 
     # interactive chat (Ctrl-D or "quit" to exit):
-    python hands_on/assistant.py
+    secrun python hands_on/assistant.py
 
     # one-shot question, then exit:
-    python hands_on/assistant.py "What does the Plus plan cost for a year?"
+    secrun python hands_on/assistant.py "What does the Plus plan cost for a year?"
 
     # point at a different MCP server:
-    python hands_on/assistant.py --server servers/notes.py
+    secrun python hands_on/assistant.py --server servers/notes.py
 
     # auto-approve side-effecting tools (don't prompt before save_note):
-    python hands_on/assistant.py --yes
+    secrun python hands_on/assistant.py --yes
 """
 
 import argparse
