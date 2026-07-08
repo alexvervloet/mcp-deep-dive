@@ -198,7 +198,7 @@ same tools/resources/prompts the §4 client saw appear inside Claude Desktop.
 
 ## Capstone — `assistant.py`
 
-**Do.** Run `python hands_on/assistant.py` and ask it something that needs a tool
+**Do.** Run `secrun python hands_on/assistant.py` and ask it something that needs a tool
 (e.g. *"What's the Plus plan cost for a full year?"*). Watch the trace. How many
 processes are involved, and where does each tool actually run?
 
@@ -211,7 +211,7 @@ tool's code.
 </details>
 
 **Stretch.** Write your own tiny `FastMCP` server with one tool you'd actually use,
-then run `python hands_on/assistant.py --server path/to/your_server.py`. When the
+then run `secrun python hands_on/assistant.py --server path/to/your_server.py`. When the
 assistant calls *your* tool with no other change to the capstone, the "write once,
 use anywhere" idea has landed. Then try `save_note` and watch the approval prompt
 fire — that's the §10 security lesson on a live path.
