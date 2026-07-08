@@ -2,7 +2,7 @@
 Setup check — run this first.
 =============================
 
-    python check_setup.py
+    secrun python check_setup.py
 
 Checks your Python version, the installed packages (the `mcp` SDK above all),
 your chosen PROVIDER, and the API key that provider needs — and tells you
@@ -67,7 +67,7 @@ CORE = [
 ]
 # Needed only once you put an LLM in the loop (Section 8 + capstone).
 HOST = [
-    ("dotenv", "python-dotenv", "loads your key from .env (host sections)"),
+    ("dotenv", "python-dotenv", "loads PROVIDER/config from .env"),
 ]
 PROVIDER_DEPS = {
     "openai": [("openai", "openai", "OpenAI chat + function calling (host sections)")],
@@ -144,8 +144,8 @@ def check_keys(env, provider):
     for name, prefix, placeholder in PROVIDER_KEYS.get(provider, []):
         value = _get(env, name)
         if not value or value == placeholder:
-            warn(f"{name} is not set (still the placeholder).")
-            print("    Needed only for Section 8+. Open .env and paste your real key when you get there.")
+            warn(f"{name} is not set.")
+            print("    Needed only for Section 8+. Store it in your keychain and run under `secrun` then — see SECRETS.md.")
             all_ok = False
         elif not value.startswith(prefix):
             warn(f"{name} is set but doesn't start with '{prefix}'. Double-check it.")
@@ -170,7 +170,7 @@ def main():
         print("    python examples/01_protocol.py")
         print("    python examples/03_client_calls_tool.py   # a server and client actually talk")
         if not keys:
-            print("\nWhen you reach Section 8 (LLM in the loop), set PROVIDER + its key in .env.")
+            print("\nWhen you reach Section 8 (LLM in the loop), set PROVIDER in .env and load its key via secrun — see SECRETS.md.")
         return 0
     print(_c("Not ready yet — fix the ✗ items above, then run this again.", "1;31"))
     print("(The ✗ items are the hard requirements: Python 3.10+ and the `mcp` SDK.)")
