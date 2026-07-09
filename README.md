@@ -17,9 +17,9 @@ no API key at all. You only need a provider once you put an LLM "host" in the lo
 
 This repo is **standalone**: it teaches everything it needs on its own. It goes far
 deeper than the "Bonus — MCP" section of the
-[Agents deep dive](https://github.com/Ailuue/agents-deep-dive) (Section 8 here *is*
+[Agents deep dive](https://github.com/alexvervloet/agents-deep-dive) (Section 8 here *is*
 the agent loop, with tools served over MCP), and its security section builds on the
-[Prompt Injection deep dive](https://github.com/Ailuue/prompt-injection-deep-dive)
+[Prompt Injection deep dive](https://github.com/alexvervloet/prompt-injection-deep-dive)
 — but its code depends on neither.
 
 Like its siblings, it's meant to be *walked through*. Each section ends with
@@ -55,11 +55,13 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 # 2. Install dependencies (the official MCP SDK + a provider SDK)
 pip install -r requirements.txt
 
-# 3. Copy the env file — you do NOT need a key for Sections 2-7
+# 3. Copy the env file — Sections 2-7 need no key; the host (§8+) does
 cp .env.example .env
+#    (Real provider instead of the mock? Its key goes in your OS keychain,
+#     not .env — see ../SECRETS.md — then run scripts as `secrun python ...`.)
 
 # 4. Confirm everything is wired up (makes no API call, costs nothing)
-python check_setup.py
+secrun python check_setup.py
 ```
 
 The `mcp` SDK and Python 3.10+ are required for **everything**. A `PROVIDER` and
@@ -191,7 +193,7 @@ a model is driving (§8, §11).
 ## 8. Put an LLM in the loop
 
 ```bash
-python examples/07_llm_calls_mcp_tools.py     # needs a key
+secrun python examples/07_llm_calls_mcp_tools.py     # needs a key
 ```
 
 The first example that costs money — everything before was offline. Now a **model
@@ -235,7 +237,7 @@ MCP is a **trust decision**. When your host connects to a server, that server's
 tool descriptions and resource contents flow straight into your model's context —
 and the model's tool calls get executed by your host. A server you didn't write is
 **untrusted input**, exactly like a web page in the
-[Prompt Injection deep dive](https://github.com/Ailuue/prompt-injection-deep-dive).
+[Prompt Injection deep dive](https://github.com/alexvervloet/prompt-injection-deep-dive).
 This connects to [servers/sneaky.py](servers/sneaky.py) — a deliberately hostile
 server — and shows the two attacks (a malicious tool *description* that tries to
 hijack the model, and a tool *result* that smuggles instructions) and the defenses:
@@ -284,16 +286,16 @@ server and the assistant gains new powers without touching the capstone.
 
 ```bash
 # interactive chat (Ctrl-D or "quit" to exit):
-python hands_on/assistant.py
+secrun python hands_on/assistant.py
 
 # one-shot question, then exit:
-python hands_on/assistant.py "What does the Plus plan cost for a year?"
+secrun python hands_on/assistant.py "What does the Plus plan cost for a year?"
 
 # point at a different MCP server:
-python hands_on/assistant.py --server servers/notes.py
+secrun python hands_on/assistant.py --server servers/notes.py
 
 # auto-approve side-effecting tools (skip the prompt before save_note):
-python hands_on/assistant.py --yes
+secrun python hands_on/assistant.py --yes
 ```
 
 Read [hands_on/assistant.py](hands_on/assistant.py): it's just the client
@@ -338,7 +340,7 @@ live path:
 
 The general ops machinery — observability, cost, reliability, caching, guardrails,
 prompt versioning, eval gates — is built from scratch and wired into one running app
-in **[Production](https://github.com/Ailuue/ai-in-production-deep-dive)** (#8 in the
+in **[Production](https://github.com/alexvervloet/ai-in-production-deep-dive)** (#8 in the
 series), which runs offline on a mock provider.
 
 ---
@@ -381,14 +383,14 @@ git-ignored.)
 
 ## Troubleshooting
 
-Run `python check_setup.py` first — it catches most problems. Then, by symptom:
+Run `secrun python check_setup.py` first — it catches most problems. Then, by symptom:
 
 | What you see | What it means / the fix |
 |--------------|-------------------------|
 | `ModuleNotFoundError: mcp` | The SDK isn't installed. `pip install -r requirements.txt` (it pulls `mcp[cli]`). |
 | A server example just hangs | A stdio server talks over stdin/stdout — **don't** run `servers/*.py` directly expecting output; run the **example** (or the capstone), which launches the server for you. |
 | `08_http_transport.py` can't connect | The HTTP server isn't up. Start `python servers/calculator_http.py` in another terminal first (it stays running on `:8000`). |
-| `PROVIDER=... needs ... in .env` | Only the LLM sections (8 + capstone) need a key. Sections 2–7 run with none. Add the key or stick to the offline examples. |
+| `PROVIDER=... needs ... in the environment` | Only the LLM sections (8 + capstone) need a key. Sections 2–7 run with none. Load the key from your keychain with `secrun` (see [SECRETS.md](../SECRETS.md)), or stick to the offline examples. |
 | Import errors from `host` / `client` / `servers` | Run from the repo root (`python examples/03_...py`), not from inside a subfolder — the examples add the repo root to `sys.path`. |
 | Claude Desktop doesn't see my server | Use **absolute** paths to the venv's python *and* the script in the config, then fully restart the app. `mcp dev servers/toolbox.py` helps debug locally. |
 | `SyntaxError` / odd type errors on startup | You're likely on Python 3.9 or older; this repo needs 3.10+. `check_setup.py` confirms your version. |
@@ -401,33 +403,34 @@ and [host/loop.py](host/loop.py) are the whole story.
 
 ## The series
 
-This is one of thirteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus five bonus dives.
+This is one of sixteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus eight bonus dives.
 Each one stands on its own — its own setup, examples, and capstone — and they all
 share the same house style: provider-agnostic where it makes sense, built from
 scratch (no frameworks), offline-first examples, and a real capstone. Do them in
 any order; this sequence builds naturally:
 
-1. [OpenAI API](https://github.com/Ailuue/openai-api-deep-dive) — the API from zero
-2. [Claude API](https://github.com/Ailuue/claude-api-deep-dive) — the same ideas, the Anthropic way
-3. [Prompt Engineering](https://github.com/Ailuue/prompt-engineering-deep-dive) — shape model behavior with better prompts
-4. [RAG](https://github.com/Ailuue/rag-deep-dive) — answer questions over your own documents
-5. [Evals](https://github.com/Ailuue/evals-deep-dive) — measure whether a change actually helps
-6. [Agents](https://github.com/Ailuue/agents-deep-dive) — give a model tools and a loop so it can act
-7. [Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive) — attack and defend all of the above
-8. [Production](https://github.com/Ailuue/ai-in-production-deep-dive) — operate one app end to end
+1. [OpenAI API](https://github.com/alexvervloet/openai-api-deep-dive) — the API from zero
+2. [Claude API](https://github.com/alexvervloet/claude-api-deep-dive) — the same ideas, the Anthropic way
+3. [Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive) — shape model behavior with better prompts
+4. [RAG](https://github.com/alexvervloet/rag-deep-dive) — answer questions over your own documents
+5. [Evals](https://github.com/alexvervloet/evals-deep-dive) — measure whether a change actually helps
+6. [Agents](https://github.com/alexvervloet/agents-deep-dive) — give a model tools and a loop so it can act
+7. [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive) — attack and defend all of the above
+8. [Production](https://github.com/alexvervloet/ai-in-production-deep-dive) — operate one app end to end
 
 **Bonus dives** — standalone, slotting in where they're most useful:
 
-- [Context Engineering](https://github.com/Ailuue/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
-- [Multimodal](https://github.com/Ailuue/multimodal-deep-dive) — images & audio, not just text
-- [Fine-tuning](https://github.com/Ailuue/fine-tuning-deep-dive) — teach a model new behavior by example
-- [MCP](https://github.com/Ailuue/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
-- [Local Models](https://github.com/Ailuue/local-models-deep-dive) — run open-weight models on your own machine
-- [Agent Harnesses](https://github.com/Ailuue/agent-harness-deep-dive) — build on the loop: hooks, permissions, sandboxing, subagents
-- [Realtime Voice](https://github.com/Ailuue/realtime-voice-deep-dive) — low-latency speech-to-speech agents
+- [Context Engineering](https://github.com/alexvervloet/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
+- [Multimodal](https://github.com/alexvervloet/multimodal-deep-dive) — images & audio, not just text
+- [Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive) — teach a model new behavior by example
+- [MCP](https://github.com/alexvervloet/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
+- [Local Models](https://github.com/alexvervloet/local-models-deep-dive) — run open-weight models on your own machine
+- [Agent Harnesses](https://github.com/alexvervloet/agent-harness-deep-dive) — build on the loop: hooks, permissions, sandboxing, subagents
+- [Realtime Voice](https://github.com/alexvervloet/realtime-voice-deep-dive) — low-latency speech-to-speech agents
+- [Observability](https://github.com/alexvervloet/observability-deep-dive) — watch a running app over time: drift, quality, alerting, the flywheel
 
 **MCP is a bonus dive in the series.** It slots most naturally right after
-[Agents](https://github.com/Ailuue/agents-deep-dive) (#6) — Section 8 here is that
+[Agents](https://github.com/alexvervloet/agents-deep-dive) (#6) — Section 8 here is that
 dive's loop with tools served over MCP — and its security section (§10) builds on
-[Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive)
+[Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive)
 (#7).
