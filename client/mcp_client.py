@@ -135,7 +135,8 @@ class MCPClient:
     async def read_resource(self, uri: str) -> str:
         """Read a resource by URI (`resources/read`) and return its text."""
         assert self.session is not None
-        resp = await self.session.read_resource(uri)
+        # The SDK types `uri` as pydantic's AnyUrl; it coerces a plain str at runtime.
+        resp = await self.session.read_resource(uri)  # type: ignore[arg-type]
         return "".join(getattr(block, "text", "") for block in resp.contents)
 
     # --- prompts -----------------------------------------------------------
