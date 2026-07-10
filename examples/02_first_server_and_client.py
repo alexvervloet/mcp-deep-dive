@@ -54,7 +54,7 @@ async def main():
             tools = await session.list_tools()
             print(f"\nserver advertises {len(tools.tools)} tool(s):")
             for t in tools.tools:
-                print(f"  - {t.name}: {t.description.splitlines()[0]}")
+                print(f"  - {t.name}: {t.description.splitlines()[0] if t.description else ''}")
                 print(f"    inputSchema: {t.inputSchema}")
 
             # 3) Call the tool (tools/call). A model would *request* this; here
