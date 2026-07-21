@@ -1,6 +1,5 @@
 """
-servers/calculator_http.py — the SAME server, over HTTP instead of stdio.
-=========================================================================
+servers/calculator_http.py: the SAME server, over HTTP instead of stdio.
 
 This is byte-for-byte the calculator from servers/calculator.py, with ONE line
 changed: the transport. Instead of `mcp.run()` (stdio), it runs
@@ -18,7 +17,7 @@ That one-line swap is the whole lesson of the transports section:
                    another language or another company. You now have to think
                    about ports, URLs, and (in production) authentication.
 
-The tools, resources, and prompts you write are IDENTICAL across transports —
+The tools, resources, and prompts you write are IDENTICAL across transports 
 you choose the transport based on WHERE the server runs, not what it does.
 
 Run it (it starts a server and stays up; Ctrl-C to stop):

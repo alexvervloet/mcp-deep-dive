@@ -1,10 +1,9 @@
 """
-host/providers.py — the ONLY provider-specific file (mirrors the agents dive).
-==============================================================================
+host/providers.py: the ONLY provider-specific file (mirrors the agents dive).
 
 A host that drives an LLM is provider-agnostic: the loop, the MCP plumbing, the
 control logic are all the same regardless of which model you use. The one thing
-that genuinely differs is the *shape* of a tool-calling turn — how you describe
+that genuinely differs is the *shape* of a tool-calling turn: how you describe
 tools, how the model hands back a tool request, and how you send a result back.
 This file normalizes all of that to a tiny neutral interface the host uses:
 
@@ -13,11 +12,11 @@ This file normalizes all of that to a tiny neutral interface the host uses:
   format_tool_results(results)     -> provider-native messages to append
   user_message(text)               -> a provider-native user message
 
-This is the same abstraction (and the same model IDs) as the agents deep dive —
+This is the same abstraction (and the same model IDs) as the agents deep dive 
 on purpose. Here, the `tools` we pass in are derived from an MCP server's
 `tools/list` rather than imported from a local module, but the provider code
 can't tell the difference: a tool is a name + description + JSON Schema either
-way. That's the whole point of MCP — the tool's *origin* is invisible to the
+way. That's the whole point of MCP: the tool's *origin* is invisible to the
 model.
 """
 
@@ -26,7 +25,7 @@ import os
 from dataclasses import dataclass
 from functools import lru_cache
 
-# Same model IDs as the sibling DeepDives — don't invent new ones.
+# Same model IDs as the sibling DeepDives: don't invent new ones.
 _OPENAI_CHAT = "gpt-4o-mini"
 _CLAUDE_CHAT = "claude-haiku-4-5"
 _KEYS = {"openai": ["OPENAI_API_KEY"], "claude": ["ANTHROPIC_API_KEY"]}
@@ -36,7 +35,7 @@ _KEYS = {"openai": ["OPENAI_API_KEY"], "claude": ["ANTHROPIC_API_KEY"]}
 class ToolSpec:
     """A neutral tool descriptor. We build these from an MCP server's tool list
     (name + description + inputSchema), then convert to the provider's format.
-    Identical idea to the agents dive's Tool, minus the local `func` — here the
+    Identical idea to the agents dive's Tool, minus the local `func`. Here the
     function lives on the server and is invoked over the protocol."""
 
     name: str
@@ -92,7 +91,7 @@ def ensure_ready() -> None:
         sys.exit(
             f"PROVIDER={p} needs {', '.join(missing)} in the environment. "
             f"Provide them via secrun (see SECRETS.md), or run `secrun python check_setup.py`. "
-            f"(The offline examples need no key — this is only for the host.)"
+            f"(The offline examples need no key; this is only for the host.)"
         )
 
 
@@ -111,7 +110,7 @@ def _anthropic_client():
 
 
 def user_message(text: str) -> dict:
-    """A plain user message — same shape on both providers."""
+    """A plain user message, same shape on both providers."""
     return {"role": "user", "content": text}
 
 

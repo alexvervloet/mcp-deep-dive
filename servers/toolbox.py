@@ -1,6 +1,5 @@
 """
-servers/toolbox.py — a realistic multi-tool MCP server.
-=======================================================
+servers/toolbox.py: a realistic multi-tool MCP server.
 
 The calculator served one tool; the notes server showed all three primitives
 on a small scale. This server is what a *real* MCP server looks like: a handful
@@ -10,14 +9,14 @@ prompt, all from one process. It's the server the capstone host drives.
 The point of this section is that adding capability to an MCP server is the same
 move every time: write a function, describe it with a docstring + type hints,
 slap `@mcp.tool()` on it. The model then discovers it automatically via
-`tools/list` — you don't change the client at all. That's the payoff of a
+`tools/list`, and you don't change the client at all. That's the payoff of a
 protocol: the server grows, every MCP-speaking host gets the new tool for free.
 
 Tools here, chosen to exercise routing and chaining:
   - calculator   : safe arithmetic (pure, no side effects)
   - search_notes : read-only knowledge-base lookup
   - word_count   : counts words/characters in text (pure)
-  - save_note    : WRITES a file (a side effect — the "dangerous" one)
+  - save_note    : WRITES a file (a side effect, the "dangerous" one)
 
 Run directly to serve over stdio:
 

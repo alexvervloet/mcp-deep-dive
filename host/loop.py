@@ -1,17 +1,16 @@
 """
-host/loop.py — the host loop: an LLM that calls MCP tools.
-=========================================================
+host/loop.py: the host loop: an LLM that calls MCP tools.
 
 This is where MCP meets the agent loop. If you did the agents deep dive, the
-loop is identical — model picks a tool, you run it, you feed the result back,
-repeat — with ONE change: the tools come from an MCP server (`tools/list`) and
+loop is identical (model picks a tool, you run it, you feed the result back,
+repeat) with ONE change: the tools come from an MCP server (`tools/list`) and
 are executed over the protocol (`tools/call`) instead of being local Python
 functions. The model can't tell the difference; that's the entire payoff.
 
 The flow:
   1. Connect to an MCP server and call `list_tools()`.
   2. Turn each MCP tool descriptor into a neutral `ToolSpec` (name + description
-     + JSON Schema) — the SAME object the provider layer already knows how to
+     + JSON Schema), the SAME object the provider layer already knows how to
      describe to a model.
   3. Run the loop: ask the model; if it requests tools, call them OVER MCP and
      feed results back; stop when it answers with no tool calls.
@@ -20,7 +19,7 @@ Control logic carried over from the agents dive, because a tool over a protocol
 is still a tool you must run safely:
   - max_steps: a hard ceiling so a confused model can't loop forever.
   - approval:  side-effecting tools (here, anything whose name is in
-               `dangerous_tools`) can be gated behind an `approve` callback —
+               `dangerous_tools`) can be gated behind an `approve` callback 
                the human-in-the-loop. This matters MORE with MCP, because the
                server is code you may not have written.
   - errors:    a failing tool returns its error text as the result, so the model
@@ -58,7 +57,7 @@ def mcp_tools_to_specs(tools) -> list[ToolSpec]:
     """Convert MCP tool descriptors (from MCPClient.list_tools) into the neutral
     ToolSpec the provider layer understands. This three-line function is the
     whole bridge between 'a tool served over MCP' and 'a tool the model can
-    call' — the inputSchema is already JSON Schema, so it passes straight through."""
+    call'. The inputSchema is already JSON Schema, so it passes straight through."""
     return [
         ToolSpec(name=t.name, description=t.description, parameters=t.input_schema)
         for t in tools

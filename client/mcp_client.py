@@ -1,6 +1,5 @@
 """
-client/mcp_client.py — a small, readable wrapper around the MCP client SDK.
-==========================================================================
+client/mcp_client.py: a small, readable wrapper around the MCP client SDK.
 
 The official SDK's client API is asynchronous and uses two nested context
 managers:
@@ -18,13 +17,13 @@ in one class, `MCPClient`, that:
   - launches a server script as a subprocess over **stdio** (the most common
     local transport),
   - runs the `initialize` handshake,
-  - exposes plain methods — list/call tools, list/read resources, list/get
-    prompts — that return simple Python values,
+  - exposes plain methods (list/call tools, list/read resources, list/get
+    prompts) that return simple Python values,
   - works both as an async context manager (for the host's event loop) AND with
     a tiny synchronous helper (`run`) so the early examples read top-to-bottom
     with no async noise.
 
-Everything here is a thin pass-through to the SDK. Nothing is hidden — open the
+Everything here is a thin pass-through to the SDK. Nothing is hidden; open the
 SDK calls below and you'll see the exact methods the docs describe.
 
 SDK note: targets the official `mcp` Python SDK 1.x. Imports used:
@@ -115,7 +114,7 @@ class MCPClient:
 
         MCP tool results come back as a list of `content` blocks; for these
         text-only tools we just join the text. `result.isError` is True when the
-        tool raised — we surface that inline so a caller (or model) can react.
+        tool raised, so we surface that inline so a caller (or model) can react.
         """
         assert self.session is not None
         result = await self.session.call_tool(name, arguments)

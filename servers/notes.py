@@ -1,23 +1,22 @@
 """
-servers/notes.py — a server with all THREE MCP primitives.
-==========================================================
+servers/notes.py: a server with all THREE MCP primitives.
 
 The calculator server showed one primitive: a TOOL (a function the model can
 *call* to take an action). MCP defines three primitives in total, and this
 server demonstrates all of them over the same connection:
 
-  1. TOOLS      — actions the model can invoke. Here: `save_note` (writes a
-                  file — a side effect) and `search_notes` (read-only lookup).
+  1. TOOLS      actions the model can invoke. Here: `save_note` (writes a
+                  file, a side effect) and `search_notes` (read-only lookup).
                   The client/model decides to call these.
 
-  2. RESOURCES  — read-only DATA the server exposes by URI, like GET endpoints.
+  2. RESOURCES  read-only DATA the server exposes by URI, like GET endpoints.
                   The *application* decides to read a resource and put its
                   contents into the model's context. The model doesn't "call" a
                   resource the way it calls a tool. Here:
                     notes://all          -> a fixed list of all note titles
                     notes://note/{title} -> the body of one note (templated URI)
 
-  3. PROMPTS    — reusable, parameterized prompt TEMPLATES the server offers.
+  3. PROMPTS    reusable, parameterized prompt TEMPLATES the server offers.
                   Think of them as slash-commands a user picks ("summarize this
                   notebook"); the server fills in the template and returns the
                   messages to send to the model. Here: `summarize_notes` and
