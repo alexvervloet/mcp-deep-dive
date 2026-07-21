@@ -1,26 +1,26 @@
-# MCP (Model Context Protocol) — A Guided Deep Dive
+# MCP (Model Context Protocol): A Guided Deep Dive
 
 A hands-on playground for learning the **Model Context Protocol** from the ground
-up — the open standard for handing an LLM *tools, data, and prompts* from a
+up: the open standard for handing an LLM *tools, data, and prompts* from a
 separate process. You'll build MCP servers, write a client that talks to them,
-and finally let a model drive those tools over the protocol — understanding every
+and finally let a model drive those tools over the protocol, understanding every
 moving part: the three primitives (tools, resources, prompts), the JSON-RPC
 handshake, stdio vs. HTTP transports, wiring a server into Claude Desktop / Claude
 Code, and the security model. No framework magic beyond the official `mcp` SDK
-itself — just enough code to *see* how it works.
+itself, just enough code to see how it works.
 
 The thing that makes this repo click: **most of it runs offline and free.** A
-server and a client talk to each other with **no model involved** — so Sections
+server and a client talk to each other with **no model involved**, so Sections
 2–7 (your first server, the client, resources, prompts, a multi-tool server) need
 no API key at all. You only need a provider once you put an LLM "host" in the loop
 (Section 8 onward).
 
 This repo is **standalone**: it teaches everything it needs on its own. It goes far
-deeper than the "Bonus — MCP" section of the
+deeper than the "Bonus: MCP" section of the
 [Agents deep dive](https://github.com/alexvervloet/agents-deep-dive) (Section 8 here *is*
 the agent loop, with tools served over MCP), and its security section builds on the
 [Prompt Injection deep dive](https://github.com/alexvervloet/prompt-injection-deep-dive)
-— but its code depends on neither.
+but its code depends on neither.
 
 Like its siblings, it's meant to be *walked through*. Each section ends with
 something to run; the first six run **offline and free**. [EXERCISES.md](EXERCISES.md)
@@ -37,10 +37,10 @@ has a predict-then-run prompt for each section.
 That's the whole repo. Before MCP, every app re-implemented its own tools and
 glued them to its own model in its own way. MCP makes the *connector* standard: a
 **server** exposes capabilities; a **client** (inside a **host** like Claude
-Desktop, an IDE, or the capstone here) connects and uses them — over plain
+Desktop, an IDE, or the capstone here) connects and uses them, over plain
 JSON-RPC. The model never knows or cares where a tool came from; to it, a tool is
-just a name, a description, and a schema. Everything below — resources, prompts,
-HTTP transport, security — is a small addition to that one idea. Hold onto it and
+just a name, a description, and a schema. Everything below (resources, prompts,
+HTTP transport, security) is a small addition to that one idea. Hold onto it and
 none of this feels complicated.
 
 ---
@@ -55,10 +55,10 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 # 2. Install dependencies (the official MCP SDK + a provider SDK)
 pip install -r requirements.txt
 
-# 3. Copy the env file — Sections 2-7 need no key; the host (§8+) does
+# 3. Copy the env file: Sections 2-7 need no key; the host (§8+) does
 cp .env.example .env
 #    (Real provider instead of the mock? Its key goes in your OS keychain,
-#     not .env — see ../SECRETS.md — then run scripts as `secrun python ...`.)
+#     not .env: see ../SECRETS.md, then run scripts as `secrun python ...`.)
 
 # 4. Confirm everything is wired up (makes no API call, costs nothing)
 secrun python check_setup.py
@@ -69,13 +69,13 @@ its key are required **only** for the LLM-in-the-loop sections (8 + the capstone
 
 | `PROVIDER` | Used for | Key needed |
 |------------|----------|------------|
-| *(none)* | Sections 2–7 — server↔client with **no model**. Fully offline. | none |
+| *(none)* | Sections 2-7: server to client with **no model**. Fully offline. | none |
 | `openai` (default) | The host loop (§8+): OpenAI chat + function calling. | `OPENAI_API_KEY` |
 | `claude` | The host loop (§8+): Claude messages + tool use. | `ANTHROPIC_API_KEY` |
 
-> 💡 **MCP-first means free-first.** The protocol is the subject, and the protocol
-> doesn't need a model. You can learn the entire mechanism — servers, the three
-> primitives, transports, even the security model — without spending a cent. The
+> **MCP-first means free-first.** The protocol is the subject, and the protocol
+> doesn't need a model. You can learn the entire mechanism (servers, the three
+> primitives, transports, even the security model) without spending a cent. The
 > LLM only shows up at the end, to *use* what you built.
 
 ---
@@ -89,11 +89,11 @@ python examples/01_protocol.py
 MCP is a small, boring idea, and it's worth getting the vocabulary straight before
 launching anything:
 
-- **Host** — the app the user interacts with (Claude Desktop, an IDE, the capstone
+- **Host**: the app the user interacts with (Claude Desktop, an IDE, the capstone
   here). It contains one or more **clients**.
-- **Client** — a connector inside the host that holds *one* connection to *one*
+- **Client**: a connector inside the host that holds *one* connection to *one*
   server and speaks the protocol.
-- **Server** — a separate program that exposes capabilities. It contains **no
+- **Server**: a separate program that exposes capabilities. It contains **no
   model**; it just answers requests.
 
 They talk over **JSON-RPC 2.0** (plain JSON request/response) across a **transport**
@@ -118,10 +118,10 @@ python examples/02_first_server_and_client.py
 Section 2 showed the JSON messages; here you send real ones, using the official
 SDK's client API with **no wrapper**, so you see the actual ceremony exactly as the
 SDK docs describe it. The server ([servers/calculator.py](servers/calculator.py))
-is a dozen lines — a `FastMCP` instance with one `@mcp.tool()` function. The client
+is a dozen lines: a `FastMCP` instance with one `@mcp.tool()` function. The client
 spawns it as a subprocess over stdio, runs the `initialize` handshake, then
 `list_tools()` and `call_tool(...)`. This is the only example that uses the raw API
-directly — after this we use a small `MCPClient` wrapper so the *protocol* stays in
+directly. After this we use a small `MCPClient` wrapper so the *protocol* stays in
 focus, not the async boilerplate.
 
 ---
@@ -132,43 +132,43 @@ focus, not the async boilerplate.
 python examples/03_client_calls_tool.py
 ```
 
-**The free-first runnable to really sit with.** Same idea as §3 — a client lists and
-calls a tool — but through the small [`MCPClient`](client/mcp_client.py) wrapper, so
+**The free-first runnable to really sit with.** Same idea as §3, a client lists and
+calls a tool, but through the small [`MCPClient`](client/mcp_client.py) wrapper, so
 the steps stand out: **connect → list → call**. It proves the core claim of the
 whole repo: *you write a server once, and any MCP-speaking client can discover and
-use its tools — with no LLM anywhere.* Everything later is a small addition to
+use its tools, with no LLM anywhere.* Everything later is a small addition to
 exactly this.
 
 ---
 
-## 5. Resources — read-only data for the model
+## 5. Resources: read-only data for the model
 
 ```bash
 python examples/04_resources.py
 ```
 
 A tool is something the model *calls* to act. A **resource** is read-only **data**
-the server publishes by URI — closer to a GET endpoint than a function call. The
+the server publishes by URI, closer to a GET endpoint than a function call. The
 distinction is about control: *your application* decides to read a resource and put
 its contents into the model's context; the model doesn't invoke it. The
 [notes server](servers/notes.py) exposes a static resource (`notes://all`) and a
-*templated* one (`notes://note/{key}`); the example lists and reads them — still
+*templated* one (`notes://note/{key}`); the example lists and reads them, still
 with no LLM.
 
 ---
 
-## 6. Prompts — reusable templates served by MCP
+## 6. Prompts: reusable templates served by MCP
 
 ```bash
 python examples/05_prompts.py
 ```
 
 The third primitive. A **prompt** is a parameterized prompt *template* the server
-owns and the user picks — think of the slash-commands in a chat app (`/summarize`).
+owns and the user picks: think of the slash-commands in a chat app (`/summarize`).
 Why serve prompts over a protocol instead of hard-coding them in the host? Because
 **the server is the expert on its own data**: the team that runs the notes server
-can ship a great "summarize my notes" prompt — correct field names, the right tone
-— and improve it server-side without every host re-implementing it. The host just
+can ship a great "summarize my notes" prompt, with correct field names and the right
+tone, and improve it server-side without every host re-implementing it. The host just
 lists what's available and offers it to the user.
 
 ---
@@ -181,11 +181,11 @@ python examples/06_multi_tool_server.py
 
 So far, one tool at a time. Real servers expose a handful of related tools, and the
 client discovers them all the same way. This connects to
-[servers/toolbox.py](servers/toolbox.py) — calculator, search_notes, word_count,
-save_note, plus resources and a prompt — and exercises several over one connection.
+[servers/toolbox.py](servers/toolbox.py), with calculator, search_notes, word_count,
+save_note, plus resources and a prompt, and exercises several over one connection.
 Two things to notice: you **didn't change the client** to get new tools (the server
 grew; `tools/list` just returns more), and `save_note` has a **side effect** (it
-writes a file) — which is exactly the kind of tool you'll gate behind approval once
+writes a file), which is exactly the kind of tool you'll gate behind approval once
 a model is driving (§8, §11).
 
 ---
@@ -196,11 +196,11 @@ a model is driving (§8, §11).
 secrun python examples/07_llm_calls_mcp_tools.py     # needs a key
 ```
 
-The first example that costs money — everything before was offline. Now a **model
+The first example that costs money; everything before was offline. Now a **model
 drives the MCP tools**: the host lists the server's tools, describes them to the
 model, and when the model asks to call one, the host runs it over the protocol and
 feeds the result back. **This is the agent loop** from the Agents deep dive, with
-one change — the tools live in a separate process behind MCP. The headline: the
+one change: the tools live in a separate process behind MCP. The headline: the
 model has *no idea* the tools came from an MCP server. To it they're just
 names + descriptions + schemas. That invisibility is the reason MCP exists. The
 loop lives in [host/loop.py](host/loop.py), and it carries over the agent-dive
@@ -209,7 +209,7 @@ in-band error results so a failing tool doesn't crash the host.
 
 ---
 
-## 9. Transports — stdio vs. HTTP
+## 9. Transports: stdio vs. HTTP
 
 ```bash
 # terminal 1: start the HTTP server and leave it running
@@ -220,29 +220,29 @@ python examples/08_http_transport.py
 
 The stdio examples *launched* the server themselves as a subprocess. An **HTTP**
 server is different: it's already running somewhere and you connect to it by URL.
-Same tools, same `tools/list` / `tools/call` — just a network transport
+Same tools, same `tools/list` / `tools/call`, just a network transport
 underneath. Rule of thumb: **stdio** for local tools that ship with the host (a
 subprocess on your machine); **streamable HTTP** for a shared service multiple
 hosts connect to over the network.
 
 ---
 
-## 10. Security — MCP + prompt injection
+## 10. Security: MCP + prompt injection
 
 ```bash
 python examples/09_security.py     # offline, no key
 ```
 
 MCP is a **trust decision**. When your host connects to a server, that server's
-tool descriptions and resource contents flow straight into your model's context —
+tool descriptions and resource contents flow straight into your model's context 
 and the model's tool calls get executed by your host. A server you didn't write is
 **untrusted input**, exactly like a web page in the
 [Prompt Injection deep dive](https://github.com/alexvervloet/prompt-injection-deep-dive).
-This connects to [servers/sneaky.py](servers/sneaky.py) — a deliberately hostile
-server — and shows the two attacks (a malicious tool *description* that tries to
+This connects to [servers/sneaky.py](servers/sneaky.py), a deliberately hostile
+server, and shows the two attacks (a malicious tool *description* that tries to
 hijack the model, and a tool *result* that smuggles instructions) and the defenses:
 least privilege, human approval for side-effecting tools, and treating every
-server's text as untrusted. No LLM needed — you can see the malice in the raw data,
+server's text as untrusted. No LLM needed; you can see the malice in the raw data,
 which is the whole point.
 
 ---
@@ -270,7 +270,7 @@ In **Claude Code**, register it from the CLI:
 claude mcp add toolbox -- /absolute/path/to/.venv/bin/python servers/toolbox.py
 ```
 
-Restart the host and your tools, resources, and prompts appear — the same ones the
+Restart the host and your tools, resources, and prompts appear, the same ones the
 client in §4 saw. You can also point a host at *existing* third-party servers
 (filesystem, GitHub, databases) the same way. The `mcp` CLI (installed via
 `mcp[cli]`) can inspect or run a server during development: `mcp dev servers/toolbox.py`.
@@ -300,7 +300,7 @@ secrun python hands_on/assistant.py --yes
 
 Read [hands_on/assistant.py](hands_on/assistant.py): it's just the client
 (`MCPClient`), the host loop (`run_host`), and a human-approval callback wired to a
-CLI — the whole repo in one file. **Suggested exercise:** write your own small
+CLI, the whole repo in one file. **Suggested exercise:** write your own small
 `FastMCP` server (one tool you'd actually use) and point the capstone at it with
 `--server`. When the assistant calls *your* tool with no other change, MCP has
 clicked.
@@ -312,14 +312,14 @@ clicked.
 You've built servers, a client, and a host. The frontier is more of the same idea,
 at more scale:
 
-- **Sampling & elicitation** — newer MCP features that let a *server* ask the host's
+- **Sampling & elicitation**: newer MCP features that let a *server* ask the host's
   model to generate text, or ask the *user* for input mid-call.
-- **OAuth & remote servers** — authenticating to hosted MCP servers you don't run.
-- **Real third-party servers** — wire the official filesystem / GitHub / Postgres
+- **OAuth & remote servers**: authenticating to hosted MCP servers you don't run.
+- **Real third-party servers**: wire the official filesystem / GitHub / Postgres
   servers into Claude Desktop and feel the "write once, use anywhere" payoff.
-- **Streaming results** & long-running tools — progress notifications over the
+- **Streaming results** & long-running tools: progress notifications over the
   protocol.
-- **Building a host UI** — the capstone is a REPL; a real host renders tools,
+- **Building a host UI**: the capstone is a REPL; a real host renders tools,
   resources, and prompt slash-commands as UI.
 
 ---
@@ -333,13 +333,13 @@ live path:
 |-------------------------------|---------------|
 | Connect to any server script | **Vet and pin** servers; treat unknown servers as untrusted code |
 | Approval is a terminal `y/N` prompt | A real **authorization** layer with policy, audit, and per-tool scopes |
-| Tool/resource text is read as-is | **Guardrails** on everything a server returns — it's untrusted input (§10) |
+| Tool/resource text is read as-is | **Guardrails** on everything a server returns; it's untrusted input (§10) |
 | stdio subprocess on your machine | **Auth'd HTTP** servers with TLS, rate limits, and least-privilege creds |
-| The host loop prints a trace | **Observability** — structured traces of every tool call, with cost |
+| The host loop prints a trace | **Observability**: structured traces of every tool call, with cost |
 | One server, hard-coded | A **registry** of approved servers, versioned and health-checked |
 
-The general ops machinery — observability, cost, reliability, caching, guardrails,
-prompt versioning, eval gates — is built from scratch and wired into one running app
+The general ops machinery (observability, cost, reliability, caching, guardrails,
+prompt versioning, eval gates) is built from scratch and wired into one running app
 in **[Production](https://github.com/alexvervloet/ai-in-production-deep-dive)** (#8 in the
 series), which runs offline on a mock provider.
 
@@ -383,19 +383,19 @@ git-ignored.)
 
 ## Troubleshooting
 
-Run `secrun python check_setup.py` first — it catches most problems. Then, by symptom:
+Run `secrun python check_setup.py` first; it catches most problems. Then, by symptom:
 
 | What you see | What it means / the fix |
 |--------------|-------------------------|
 | `ModuleNotFoundError: mcp` | The SDK isn't installed. `pip install -r requirements.txt` (it pulls `mcp[cli]`). |
-| A server example just hangs | A stdio server talks over stdin/stdout — **don't** run `servers/*.py` directly expecting output; run the **example** (or the capstone), which launches the server for you. |
+| A server example just hangs | A stdio server talks over stdin/stdout, so **don't** run `servers/*.py` directly expecting output; run the **example** (or the capstone), which launches the server for you. |
 | `08_http_transport.py` can't connect | The HTTP server isn't up. Start `python servers/calculator_http.py` in another terminal first (it stays running on `:8000`). |
 | `PROVIDER=... needs ... in the environment` | Only the LLM sections (8 + capstone) need a key. Sections 2–7 run with none. Load the key from your keychain with `secrun` (see [SECRETS.md](../SECRETS.md)), or stick to the offline examples. |
-| Import errors from `host` / `client` / `servers` | Run from the repo root (`python examples/03_...py`), not from inside a subfolder — the examples add the repo root to `sys.path`. |
+| Import errors from `host` / `client` / `servers` | Run from the repo root (`python examples/03_...py`), not from inside a subfolder; the examples add the repo root to `sys.path`. |
 | Claude Desktop doesn't see my server | Use **absolute** paths to the venv's python *and* the script in the config, then fully restart the app. `mcp dev servers/toolbox.py` helps debug locally. |
 | `SyntaxError` / odd type errors on startup | You're likely on Python 3.9 or older; this repo needs 3.10+. `check_setup.py` confirms your version. |
 
-Still stuck? Every file is small and self-contained — open it, read the docstring
+Still stuck? Every file is small and self-contained. Open it, read the docstring
 at the top, and run the matching example. [client/mcp_client.py](client/mcp_client.py)
 and [host/loop.py](host/loop.py) are the whole story.
 
@@ -403,34 +403,34 @@ and [host/loop.py](host/loop.py) are the whole story.
 
 ## The series
 
-This is one of sixteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus eight bonus dives.
-Each one stands on its own — its own setup, examples, and capstone — and they all
-share the same house style: provider-agnostic where it makes sense, built from
+This is one of sixteen standalone, hands-on deep dives into building with LLM APIs: eight core, plus eight bonus dives.
+Each one stands on its own, with its own setup, examples, and capstone, and they
+all share the same house style: provider-agnostic where it makes sense, built from
 scratch (no frameworks), offline-first examples, and a real capstone. Do them in
 any order; this sequence builds naturally:
 
-1. [OpenAI API](https://github.com/alexvervloet/openai-api-deep-dive) — the API from zero
-2. [Claude API](https://github.com/alexvervloet/claude-api-deep-dive) — the same ideas, the Anthropic way
-3. [Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive) — shape model behavior with better prompts
-4. [RAG](https://github.com/alexvervloet/rag-deep-dive) — answer questions over your own documents
-5. [Evals](https://github.com/alexvervloet/evals-deep-dive) — measure whether a change actually helps
-6. [Agents](https://github.com/alexvervloet/agents-deep-dive) — give a model tools and a loop so it can act
-7. [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive) — attack and defend all of the above
-8. [Production](https://github.com/alexvervloet/ai-in-production-deep-dive) — operate one app end to end
+1. [OpenAI API](https://github.com/alexvervloet/openai-api-deep-dive): the API from zero
+2. [Claude API](https://github.com/alexvervloet/claude-api-deep-dive): the same ideas, the Anthropic way
+3. [Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive): shape model behavior with better prompts
+4. [RAG](https://github.com/alexvervloet/rag-deep-dive): answer questions over your own documents
+5. [Evals](https://github.com/alexvervloet/evals-deep-dive): measure whether a change actually helps
+6. [Agents](https://github.com/alexvervloet/agents-deep-dive): give a model tools and a loop so it can act
+7. [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive): attack and defend all of the above
+8. [Production](https://github.com/alexvervloet/ai-in-production-deep-dive): operate one app end to end
 
-**Bonus dives** — standalone, slotting in where they're most useful:
+**Bonus dives**, standalone and slotting in where they're most useful:
 
-- [Context Engineering](https://github.com/alexvervloet/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
-- [Multimodal](https://github.com/alexvervloet/multimodal-deep-dive) — images & audio, not just text
-- [Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive) — teach a model new behavior by example
-- [MCP](https://github.com/alexvervloet/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
-- [Local Models](https://github.com/alexvervloet/local-models-deep-dive) — run open-weight models on your own machine
-- [Agent Harnesses](https://github.com/alexvervloet/agent-harness-deep-dive) — build on the loop: hooks, permissions, sandboxing, subagents
-- [Realtime Voice](https://github.com/alexvervloet/realtime-voice-deep-dive) — low-latency speech-to-speech agents
-- [Observability](https://github.com/alexvervloet/observability-deep-dive) — watch a running app over time: drift, quality, alerting, the flywheel
+- [Context Engineering](https://github.com/alexvervloet/context-engineering-deep-dive): manage what's in the window: memory, compaction, assembly
+- [Multimodal](https://github.com/alexvervloet/multimodal-deep-dive): images & audio, not just text
+- [Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive): teach a model new behavior by example
+- [MCP](https://github.com/alexvervloet/mcp-deep-dive): serve tools, data & prompts to any LLM over a standard protocol
+- [Local Models](https://github.com/alexvervloet/local-models-deep-dive): run open-weight models on your own machine
+- [Agent Harnesses](https://github.com/alexvervloet/agent-harness-deep-dive): build on the loop: hooks, permissions, sandboxing, subagents
+- [Realtime Voice](https://github.com/alexvervloet/realtime-voice-deep-dive): low-latency speech-to-speech agents
+- [Observability](https://github.com/alexvervloet/observability-deep-dive): watch a running app over time: drift, quality, alerting, the flywheel
 
 **MCP is a bonus dive in the series.** It slots most naturally right after
-[Agents](https://github.com/alexvervloet/agents-deep-dive) (#6) — Section 8 here is that
-dive's loop with tools served over MCP — and its security section (§10) builds on
+[Agents](https://github.com/alexvervloet/agents-deep-dive) (#6), since Section 8 here is that
+dive's loop with tools served over MCP, and its security section (§10) builds on
 [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive)
 (#7).
