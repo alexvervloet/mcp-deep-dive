@@ -1,19 +1,18 @@
 """
-hands_on/assistant.py — the capstone: a chat assistant powered entirely by MCP.
-===============================================================================
+hands_on/assistant.py: the capstone: a chat assistant powered entirely by MCP.
 
 Everything in the repo, wired into one runnable command: a multi-turn assistant
 whose every capability comes from an MCP server it connects to. The model holds
-no tools of its own — it discovers them over the protocol (`tools/list`), and
+no tools of its own. It discovers them over the protocol (`tools/list`), and
 when it wants to act, the host runs them over the protocol (`tools/call`). Swap
 the server and the assistant gets new powers without touching this file. That
 is the entire point of MCP, made usable.
 
 It pulls together every earlier section:
-  - a real multi-tool SERVER          (servers/toolbox.py — Section 7)
-  - a CLIENT over stdio               (client/mcp_client.py — Sections 3-6)
-  - an LLM HOST loop                  (host/loop.py — Section 8)
-  - human approval for risky tools    (the security lesson — Section 11)
+  - a real multi-tool SERVER          (servers/toolbox.py, Section 7)
+  - a CLIENT over stdio               (client/mcp_client.py, Sections 3-6)
+  - an LLM HOST loop                  (host/loop.py, Section 8)
+  - human approval for risky tools    (the security lesson, Section 11)
   - multi-turn memory                 (one shared history across turns)
 
 Provider-agnostic: set PROVIDER in .env and load the key via secrun (see SECRETS.md).
@@ -52,7 +51,7 @@ from host.loop import run_host
 
 SYSTEM = (
     "You are a concise, helpful assistant for Acme Cloud. Use the available "
-    "tools to answer — the calculator for any arithmetic, search_notes for "
+    "tools to answer: the calculator for any arithmetic, search_notes for "
     "product facts, and save_note to record something the user asks you to keep. "
     "Never guess at numbers or product details; look them up with a tool. If a "
     "tool fails, tell the user plainly instead of inventing an answer."
