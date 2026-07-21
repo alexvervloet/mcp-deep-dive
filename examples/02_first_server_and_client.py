@@ -1,10 +1,9 @@
 """
-examples/02_first_server_and_client.py — the raw SDK, once (offline, no key).
-=============================================================================
+examples/02_first_server_and_client.py: the raw SDK, once (offline, no key).
 
 Example 01 showed the JSON messages; here we send real ones, using the official
 SDK's client API with NO wrapper, so you see the actual ceremony exactly as the
-SDK docs describe it. This is the only example that uses the raw API directly —
+SDK docs describe it. This is the only example that uses the raw API directly 
 after this we use the small `MCPClient` wrapper to keep the lessons uncluttered.
 
 What happens:
@@ -16,7 +15,7 @@ What happens:
   5. `list_tools()` and `call_tool(...)` are the `tools/list` / `tools/call`
      methods from example 01.
 
-A server and a client talking — and not a single token of LLM involved. This is
+A server and a client talking, and not a single token of LLM involved. This is
 the free, offline foundation everything else builds on.
 
 SDK note: targets the official `mcp` Python SDK 1.x.
@@ -45,7 +44,7 @@ async def main():
     # session (the protocol on top of the pipe). This is the canonical shape.
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
-            # 1) Handshake — always first.
+            # 1) Handshake, always first.
             init = await session.initialize()
             print(f"connected to server: {init.serverInfo.name} "
                   f"(protocol {init.protocolVersion})")

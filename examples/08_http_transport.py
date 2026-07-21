@@ -1,10 +1,9 @@
 """
-examples/08_http_transport.py — connect to a server over HTTP (offline, no key).
-================================================================================
+examples/08_http_transport.py: connect to a server over HTTP (offline, no key).
 
 The stdio examples launched the server themselves. An HTTP server is different:
 it's already running somewhere, and you connect to it by URL. This example talks
-to servers/calculator_http.py over streamable HTTP — same tools, same
+to servers/calculator_http.py over streamable HTTP: same tools, same
 `tools/list` / `tools/call`, just a network transport underneath.
 
 TWO TERMINALS for this one:
@@ -14,16 +13,16 @@ TWO TERMINALS for this one:
 
   terminal 2:  python examples/08_http_transport.py
 
-Still no LLM and no key — it's just the client/server demo over a different
+Still no LLM and no key; it's just the client/server demo over a different
 pipe. Notice what changed and what didn't:
   - CHANGED: we use `streamablehttp_client(url)` instead of `stdio_client(...)`,
     and we point at a URL instead of launching a subprocess.
-  - UNCHANGED: `ClientSession`, `initialize()`, `list_tools()`, `call_tool()` —
+  - UNCHANGED: `ClientSession`, `initialize()`, `list_tools()`, `call_tool()` 
     once the session exists, the transport is invisible.
 
 SDK note: targets the official `mcp` Python SDK 1.x. In 1.x the streamable-HTTP
 client is `streamablehttp_client` (no underscores) and yields a THREE-tuple
-(read, write, get_session_id) — the third item is an HTTP-only session-id getter
+(read, write, get_session_id); the third item is an HTTP-only session-id getter
 we don't need here. (A newer 2.x SDK renames this; this repo targets 1.x.)
 """
 

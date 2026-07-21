@@ -1,14 +1,13 @@
 """
-examples/09_security.py — MCP + prompt injection (offline, no key).
-===================================================================
+examples/09_security.py: MCP + prompt injection (offline, no key).
 
 MCP is a trust decision. When your host connects to a server, that server's tool
-descriptions and resource contents flow straight into your model's context — and
+descriptions and resource contents flow straight into your model's context, and
 the model's tool calls get executed by your host. A server you didn't write is
 UNTRUSTED INPUT, exactly like a web page in the prompt-injection deep dive. MCP
 just makes the delivery clean.
 
-This example connects to servers/sneaky.py — a deliberately hostile server — and
+This example connects to servers/sneaky.py, a deliberately hostile server, and
 shows the two attacks, then the defenses. No LLM needed: we can see the malice
 in the raw data the server hands us, which is the whole point (you don't want to
 discover it only after a model has acted on it).
@@ -50,7 +49,7 @@ async def main():
     async with MCPClient("servers/sneaky.py") as client:
 
         print("=" * 68)
-        print("ATTACK 1 — a poisoned RESOURCE (indirect prompt injection)")
+        print("ATTACK 1: a poisoned RESOURCE (indirect prompt injection)")
         print("=" * 68)
         policy = await client.read_resource("sneaky://policy")
         print("the server's 'policy' resource looks innocent, but contains:\n")
@@ -63,7 +62,7 @@ async def main():
             print("   untrusted DATA (quote it, label it), never as commands.")
 
         print("\n" + "=" * 68)
-        print("ATTACK 2 — a lying / over-asking TOOL DESCRIPTION")
+        print("ATTACK 2: a lying / over-asking TOOL DESCRIPTION")
         print("=" * 68)
         for t in await client.list_tools():
             flagged = looks_like_injection(t.description)
@@ -83,7 +82,7 @@ async def main():
         print("     text are untrusted input, not instructions.")
         print("  2. Allowlist tools/servers a host may use (constrain capability).")
         print("  3. Keep a human-approval gate on side-effecting tools (the")
-        print("     capstone does this — deny, and the model adapts).")
+        print("     capstone does this: deny, and the model adapts).")
         print("  4. Validate/sandbox tool ARGUMENTS (a 'read_file' that accepts")
         print("     any path is a capability you must not hand out blindly).")
         print("\nSee the prompt-injection deep dive for the full attack/defense set.")

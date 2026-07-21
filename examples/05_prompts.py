@@ -1,23 +1,22 @@
 """
-examples/05_prompts.py — PROMPTS: reusable templates served by MCP (offline).
-=============================================================================
+examples/05_prompts.py: PROMPTS: reusable templates served by MCP (offline).
 
 The third primitive. A PROMPT is a parameterized prompt TEMPLATE that the
-server owns and the user/app picks — think of the slash-commands in a chat app
+server owns and the user/app picks: think of the slash-commands in a chat app
 ("/summarize"). The server holds the wording and fills in the arguments; the
 client gets back ready-to-send messages.
 
 Why serve prompts over a protocol instead of hard-coding them in the host?
 Because the server is the expert on its own data. The team that runs the notes
-server can ship a great "summarize my notes" prompt — correct field names, the
-right tone — and improve it server-side without every host re-implementing it.
+server can ship a great "summarize my notes" prompt, with correct field names and the
+right tone, and improve it server-side without every host re-implementing it.
 The host just lists what's available and offers it to the user.
 
 The notes server offers two:
   - summarize_notes(topic="everything")
   - draft_note(title, tone="neutral")
 
-This example lists them and renders each with arguments — still no LLM. (You'd
+This example lists them and renders each with arguments, still with no LLM. (You'd
 then send the rendered text to a model; Section 8 does that.)
 
 Run it (offline, no key):

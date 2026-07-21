@@ -1,18 +1,17 @@
 """
-examples/03_client_calls_tool.py — the FREE-first runnable (offline, no key).
-=============================================================================
+examples/03_client_calls_tool.py: the FREE-first runnable (offline, no key).
 
-Same idea as example 02 — a client lists and calls a tool on a server — but now
+Same idea as example 02, a client lists and calls a tool on a server, but now
 through the small `MCPClient` wrapper from `client/mcp_client.py`. Compare the
 two files: the wrapper hides the async ceremony so the *protocol* steps stand
 out (connect -> list -> call), which is what matters.
 
 This is the example to really sit with. It proves the core claim of the whole
 repo: **you write a server once, and any MCP-speaking client can discover and
-use its tools — with no LLM anywhere.** Everything later (resources, prompts, a
+use its tools, with no LLM anywhere.** Everything later (resources, prompts, a
 real toolbox, an LLM host) is a small addition to exactly this.
 
-Run it — it costs nothing and needs no key:
+Run it. It costs nothing and needs no key:
 
     python examples/03_client_calls_tool.py
 """
@@ -42,7 +41,7 @@ async def main():
             out = await client.call_tool("calculator", {"expression": expr})
             print(f"  calculator({expr!r}) -> {out}")
 
-        # 3) Errors come back IN-BAND, not as a crash — the server catches the
+        # 3) Errors come back IN-BAND, not as a crash. The server catches the
         #    exception and marks the result isError; our wrapper prefixes it.
         print("\na bad expression returns an error result, not a crash:")
         out = await client.call_tool("calculator", {"expression": "2 +"})

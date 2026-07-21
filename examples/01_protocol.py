@@ -1,6 +1,5 @@
 """
-examples/01_protocol.py — the protocol in one page (offline, no key).
-=====================================================================
+examples/01_protocol.py: the protocol in one page (offline, no key).
 
 Before launching anything, get the mental model. MCP is a small, boring idea:
 
@@ -11,7 +10,7 @@ Before launching anything, get the mental model. MCP is a small, boring idea:
   SERVER          a separate program that exposes tools/resources/prompts. It
                   does NOT contain a model; it just answers requests.
 
-They talk over **JSON-RPC 2.0** — plain JSON request/response messages — across
+They talk over **JSON-RPC 2.0**, plain JSON request/response messages, across
 a TRANSPORT (a pipe). The two transports you'll meet: stdio (a local subprocess,
 default in this repo) and streamable HTTP/SSE (a network service; Section 9).
 
@@ -24,7 +23,7 @@ it offers). After that, the client can ask for and use:
   PROMPTS    prompts/list, prompts/get        (user-controlled templates)
 
 That's the whole protocol surface you'll use. This script doesn't talk to a
-server — it just prints example JSON-RPC messages so the *shape* is familiar
+server. It just prints example JSON-RPC messages so the *shape* is familiar
 before example 02 sends real ones. No model, no key, no network.
 """
 
@@ -38,7 +37,7 @@ def show(title, obj):
 
 def main():
     print("=" * 70)
-    print("MCP in one page — the messages a client and server exchange")
+    print("MCP in one page: the messages a client and server exchange")
     print("=" * 70)
 
     print("\n1) The client opens the connection with a handshake.")
@@ -87,7 +86,7 @@ def main():
     print("\n" + "-" * 70)
     print("That's it. Resources (resources/list + resources/read) and prompts")
     print("(prompts/list + prompts/get) follow the same request/response shape.")
-    print("You will NOT hand-write this JSON — the SDK does it. But every example")
+    print("You will NOT hand-write this JSON; the SDK does it. But every example")
     print("from here on is just these messages flying over a pipe.")
     print("\nNext: python examples/02_first_server_and_client.py  (real messages)")
 

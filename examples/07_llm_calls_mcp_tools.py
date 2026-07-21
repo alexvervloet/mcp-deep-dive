@@ -1,17 +1,16 @@
 """
-examples/07_llm_calls_mcp_tools.py — put an LLM in the loop (NEEDS A KEY).
-=========================================================================
+examples/07_llm_calls_mcp_tools.py: put an LLM in the loop (NEEDS A KEY).
 
 This is the first example that costs money. Everything before it was offline.
 Now we let a MODEL drive the MCP tools: the host lists the server's tools,
 describes them to the model, and when the model asks to call one, the host runs
-it over the protocol and feeds the result back — the agent loop, but the tools
+it over the protocol and feeds the result back: the agent loop, but the tools
 live in a separate process behind MCP.
 
 The headline: the model has NO idea the tools came from an MCP server. To it,
 they're just names + descriptions + schemas. We built `ToolSpec` from the
 server's `tools/list`, handed those to the provider exactly like local tools,
-and the loop runs unchanged. That invisibility is the reason MCP exists — write
+and the loop runs unchanged. That invisibility is the reason MCP exists: write
 the server once, and any model on any provider can use it.
 
 Provider-agnostic: set PROVIDER in .env and load the key via secrun (see SECRETS.md).
