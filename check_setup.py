@@ -1,18 +1,17 @@
 """
-Setup check — run this first.
-=============================
+Setup check: run this first.
 
     secrun python check_setup.py
 
 Checks your Python version, the installed packages (the `mcp` SDK above all),
-your chosen PROVIDER, and the API key that provider needs — and tells you
+your chosen PROVIDER, and the API key that provider needs, and tells you
 exactly what to fix. Makes NO API calls. Uses only the standard library, so it
 runs even before `pip install`.
 
 Note the split: the `mcp` SDK and a 3.10+ Python are required for EVERYTHING.
 A PROVIDER and its key are required ONLY for the LLM-in-the-loop sections
 (8 + the capstone). The whole point of MCP-first learning is that a server and
-a client can talk with no model at all — so this check will still cheer you on
+a client can talk with no model at all, so this check will still cheer you on
 to the offline examples even if you have no key yet.
 """
 
@@ -63,7 +62,7 @@ def _get(env, name):
 
 # The mcp SDK is the one hard requirement for the whole repo.
 CORE = [
-    ("mcp", "mcp", "the Model Context Protocol SDK — the whole point of this repo"),
+    ("mcp", "mcp", "the Model Context Protocol SDK, the whole point of this repo"),
 ]
 # Needed only once you put an LLM in the loop (Section 8 + capstone).
 HOST = [
@@ -85,7 +84,7 @@ def check_python():
     if (major, minor) >= (3, 10):
         ok(f"Python {major}.{minor} (3.10+ required by the mcp SDK)")
         return True
-    fail(f"Python {major}.{minor} — this repo needs Python 3.10 or newer.")
+    fail(f"Python {major}.{minor}: this repo needs Python 3.10 or newer.")
     print("    Install a newer Python from https://www.python.org/downloads/")
     return False
 
@@ -95,9 +94,9 @@ def check_core():
     missing = []
     for import_name, pip_name, purpose in CORE:
         if importlib.util.find_spec(import_name) is not None:
-            ok(f"{pip_name} — {purpose}")
+            ok(f"{pip_name}: {purpose}")
         else:
-            fail(f"{pip_name} MISSING — {purpose}")
+            fail(f"{pip_name} MISSING: {purpose}")
             missing.append(pip_name)
     if missing:
         print("\n    Install everything with:")
@@ -122,9 +121,9 @@ def check_host_deps(provider):
     missing = []
     for import_name, pip_name, purpose in needed:
         if importlib.util.find_spec(import_name) is not None:
-            ok(f"{pip_name} — {purpose}")
+            ok(f"{pip_name}: {purpose}")
         else:
-            warn(f"{pip_name} not installed — {purpose}")
+            warn(f"{pip_name} not installed: {purpose}")
             missing.append(pip_name)
     if missing:
         print("\n    Install everything (incl. the host deps) with:")
@@ -135,7 +134,7 @@ def check_host_deps(provider):
 def check_keys(env, provider):
     print("\nAPI key (only needed for the LLM-in-the-loop sections)")
     if env is None:
-        warn(".env file not found — fine for the offline sections.")
+        warn(".env file not found; fine for the offline sections.")
         print("    When you reach Section 8, create it with:  cp .env.example .env")
         return False
     if provider is None:
@@ -145,7 +144,7 @@ def check_keys(env, provider):
         value = _get(env, name)
         if not value or value == placeholder:
             warn(f"{name} is not set.")
-            print("    Needed only for Section 8+. Store it in your keychain and run under `secrun` then — see SECRETS.md.")
+            print("    Needed only for Section 8+. Store it in your keychain and run under `secrun` then . See SECRETS.md.")
             all_ok = False
         elif not value.startswith(prefix):
             warn(f"{name} is set but doesn't start with '{prefix}'. Double-check it.")
@@ -170,9 +169,9 @@ def main():
         print("    python examples/01_protocol.py")
         print("    python examples/03_client_calls_tool.py   # a server and client actually talk")
         if not keys:
-            print("\nWhen you reach Section 8 (LLM in the loop), set PROVIDER in .env and load its key via secrun — see SECRETS.md.")
+            print("\nWhen you reach Section 8 (LLM in the loop), set PROVIDER in .env and load its key via secrun . See SECRETS.md.")
         return 0
-    print(_c("Not ready yet — fix the ✗ items above, then run this again.", "1;31"))
+    print(_c("Not ready yet. Fix the ✗ items above, then run this again.", "1;31"))
     print("(The ✗ items are the hard requirements: Python 3.10+ and the `mcp` SDK.)")
     return 1
 
