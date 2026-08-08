@@ -210,7 +210,7 @@ relays the `tools/call`, and feeds the result back. The model never touches the
 tool's code.
 </details>
 
-**Stretch.** Write your own tiny `FastMCP` server with one tool you'd actually use,
+**Stretch.** Write your own tiny `MCPServer` with one tool you'd actually use,
 then run `secrun python hands_on/assistant.py --server path/to/your_server.py`. When the
 assistant calls *your* tool with no other change to the capstone, the "write once,
 use anywhere" idea has landed. Then try `save_note` and watch the approval prompt

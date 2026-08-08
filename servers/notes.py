@@ -31,15 +31,15 @@ Run it directly to serve over stdio (a client will normally launch it):
 
     python servers/notes.py
 
-SDK note: targets the official `mcp` Python SDK 1.x (`mcp.server.fastmcp`).
+SDK note: targets the official `mcp` Python SDK 2.x (`mcp.server.mcpserver`).
 """
 
 import os
 import re
 
-from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
+from mcp.server.mcpserver import MCPServer  # type: ignore[import-untyped]
 
-mcp = FastMCP("notes")
+mcp = MCPServer("notes")
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORKSPACE = os.path.join(REPO_ROOT, "workspace")
@@ -94,7 +94,7 @@ def save_note(title: str, body: str) -> str:
 
 
 # === RESOURCES (application-controlled, read-only data) =====================
-# A resource is addressed by a URI. FastMCP registers the function under the
+# A resource is addressed by a URI. MCPServer registers the function under the
 # URI you pass to the decorator; the return value is the resource contents.
 
 

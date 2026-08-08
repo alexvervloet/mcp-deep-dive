@@ -26,7 +26,7 @@ in one class, `MCPClient`, that:
 Everything here is a thin pass-through to the SDK. Nothing is hidden; open the
 SDK calls below and you'll see the exact methods the docs describe.
 
-SDK note: targets the official `mcp` Python SDK 1.x. Imports used:
+SDK note: targets the official `mcp` Python SDK 2.x. Imports used:
   from mcp import ClientSession, StdioServerParameters
   from mcp.client.stdio import stdio_client
 """
@@ -105,7 +105,7 @@ class MCPClient:
         assert self.session is not None
         resp = await self.session.list_tools()
         return [
-            ToolInfo(name=t.name, description=t.description or "", input_schema=t.inputSchema)
+            ToolInfo(name=t.name, description=t.description or "", input_schema=t.input_schema)
             for t in resp.tools
         ]
 
@@ -113,13 +113,13 @@ class MCPClient:
         """Invoke a tool (`tools/call`) and return its text output as a string.
 
         MCP tool results come back as a list of `content` blocks; for these
-        text-only tools we just join the text. `result.isError` is True when the
+        text-only tools we just join the text. `result.is_error` is True when the
         tool raised, so we surface that inline so a caller (or model) can react.
         """
         assert self.session is not None
         result = await self.session.call_tool(name, arguments)
         text = "".join(getattr(block, "text", "") for block in result.content)
-        if getattr(result, "isError", False):
+        if getattr(result, "is_error", False):
             return f"[tool error] {text}"
         return text
 

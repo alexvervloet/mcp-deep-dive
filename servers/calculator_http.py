@@ -26,9 +26,9 @@ Run it (it starts a server and stays up; Ctrl-C to stop):
     # then, in another terminal:
     python examples/08_http_transport.py
 
-By default FastMCP serves on http://127.0.0.1:8000/mcp.
+By default MCPServer serves on http://127.0.0.1:8000/mcp.
 
-SDK note: targets the official `mcp` Python SDK 1.x. `transport="streamable-http"`
+SDK note: targets the official `mcp` Python SDK 2.x. `transport="streamable-http"`
 is the current recommended HTTP transport; older docs/tutorials may show "sse",
 which is the legacy Server-Sent-Events transport (see the README's transport
 section).
@@ -37,10 +37,10 @@ section).
 import ast
 import operator
 
-from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
+from mcp.server.mcpserver import MCPServer  # type: ignore[import-untyped]
 
 # host/port can be set here; defaults are 127.0.0.1:8000, path /mcp.
-mcp = FastMCP("calculator-http")
+mcp = MCPServer("calculator-http")
 
 _OPS = {
     ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,

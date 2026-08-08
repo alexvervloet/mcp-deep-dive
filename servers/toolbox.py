@@ -22,7 +22,7 @@ Run directly to serve over stdio:
 
     python servers/toolbox.py
 
-SDK note: targets the official `mcp` Python SDK 1.x (`mcp.server.fastmcp`).
+SDK note: targets the official `mcp` Python SDK 2.x (`mcp.server.mcpserver`).
 """
 
 import ast
@@ -30,9 +30,9 @@ import operator
 import os
 import re
 
-from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
+from mcp.server.mcpserver import MCPServer  # type: ignore[import-untyped]
 
-mcp = FastMCP("toolbox")
+mcp = MCPServer("toolbox")
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORKSPACE = os.path.join(REPO_ROOT, "workspace")

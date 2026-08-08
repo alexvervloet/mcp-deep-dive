@@ -45,13 +45,13 @@ def main():
         "jsonrpc": "2.0",
         "id": 1,
         "method": "initialize",
-        "params": {"protocolVersion": "2025-06-18", "capabilities": {}},
+        "params": {"protocolVersion": "2025-11-25", "capabilities": {}},
     })
     show("server -> client  (here's who I am + what I offer)", {
         "jsonrpc": "2.0",
         "id": 1,
         "result": {
-            "serverInfo": {"name": "calculator", "version": "1.x"},
+            "serverInfo": {"name": "calculator", "version": "1.0.0"},
             "capabilities": {"tools": {}},
         },
     })

@@ -1,9 +1,17 @@
 # The subject of this repo: the official Model Context Protocol Python SDK.
-# Bundles the FastMCP server API (`mcp.server.fastmcp`) and the client
-# (`mcp.client.*`, `ClientSession`). Pin to a 1.x release: this repo targets
-# the stable 1.x API (FastMCP + ClientSession). The `cli` extra pulls in the
-# `mcp` command used to inspect/run servers in Section 10.
-mcp[cli]>=1.2.0
+# Bundles the MCPServer server API (`mcp.server.mcpserver`) and the client
+# (`mcp.client.*`, `ClientSession`).
+#
+# The upper bound is deliberate. This repo targets the 2.x API, and 2.0 renamed
+# the server class (`FastMCP` -> `MCPServer`, and the module that holds it) and
+# switched response fields from camelCase to snake_case. A major release can do
+# that again, so the bound is what keeps a fresh `pip install` from silently
+# resolving to an API these files were not written against. If you are reading
+# 1.x tutorials, note they will use `mcp.server.fastmcp` and `result.isError`.
+#
+# The `cli` extra pulls in the `mcp` command used to inspect/run servers in
+# Section 10.
+mcp[cli]>=2.0,<3
 
 # Loads variables from a .env file (like OPENAI_API_KEY) into the environment.
 # Only needed once you put an LLM in the loop (Section 8 onward).

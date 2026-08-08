@@ -18,7 +18,7 @@ What happens:
 A server and a client talking, and not a single token of LLM involved. This is
 the free, offline foundation everything else builds on.
 
-SDK note: targets the official `mcp` Python SDK 1.x.
+SDK note: targets the official `mcp` Python SDK 2.x.
 """
 
 import asyncio
@@ -46,22 +46,22 @@ async def main():
         async with ClientSession(read, write) as session:
             # 1) Handshake, always first.
             init = await session.initialize()
-            print(f"connected to server: {init.serverInfo.name} "
-                  f"(protocol {init.protocolVersion})")
+            print(f"connected to server: {init.server_info.name} "
+                  f"(protocol {init.protocol_version})")
 
             # 2) Discover tools (tools/list).
             tools = await session.list_tools()
             print(f"\nserver advertises {len(tools.tools)} tool(s):")
             for t in tools.tools:
                 print(f"  - {t.name}: {t.description.splitlines()[0] if t.description else ''}")
-                print(f"    inputSchema: {t.inputSchema}")
+                print(f"    input_schema: {t.input_schema}")
 
             # 3) Call the tool (tools/call). A model would *request* this; here
             #    we (the client) just do it directly.
             result = await session.call_tool("calculator", {"expression": "23 * 47"})
             text = "".join(getattr(b, "text", "") for b in result.content)
             print(f"\ncall calculator(expression='23 * 47') -> {text}")
-            print(f"isError: {result.isError}")
+            print(f"is_error: {result.is_error}")
 
 
 if __name__ == "__main__":

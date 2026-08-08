@@ -42,7 +42,7 @@ async def main():
             print(f"  calculator({expr!r}) -> {out}")
 
         # 3) Errors come back IN-BAND, not as a crash. The server catches the
-        #    exception and marks the result isError; our wrapper prefixes it.
+        #    exception and marks the result is_error; our wrapper prefixes it.
         print("\na bad expression returns an error result, not a crash:")
         out = await client.call_tool("calculator", {"expression": "2 +"})
         print(f"  calculator('2 +') -> {out}")

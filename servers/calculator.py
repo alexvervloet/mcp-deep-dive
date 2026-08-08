@@ -3,7 +3,7 @@ servers/calculator.py: your first MCP server: one tool, over stdio.
 
 This is the smallest useful MCP server. It exposes exactly ONE tool 
 `calculator`, and nothing else. Everything that makes it an "MCP server" comes
-from the official SDK's high-level `FastMCP` class:
+from the official SDK's high-level `MCPServer` class:
 
   - `@mcp.tool()` turns a plain Python function into a tool the server
     advertises. The function's NAME becomes the tool name, its DOCSTRING becomes
@@ -23,17 +23,17 @@ directly and it will sit waiting on stdin:
 But you normally don't talk to it by hand; a client launches it as a
 subprocess and drives it. See examples/02 and examples/03.
 
-SDK note: targets the official `mcp` Python SDK 1.x (`mcp.server.fastmcp`).
+SDK note: targets the official `mcp` Python SDK 2.x (`mcp.server.mcpserver`).
 """
 
 import ast
 import operator
 
-from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
+from mcp.server.mcpserver import MCPServer  # type: ignore[import-untyped]
 
 # Create the server. The name is metadata the client sees during the handshake
 # ("which server am I talking to?"). Pick something recognizable.
-mcp = FastMCP("calculator")
+mcp = MCPServer("calculator")
 
 
 # --- a safe arithmetic evaluator (NOT Python's eval) -----------------------
@@ -69,7 +69,7 @@ def calculator(expression: str) -> str:
 
     Use this for any math instead of computing it yourself.
     """
-    # The docstring above is NOT just for humans: FastMCP sends it to the client
+    # The docstring above is NOT just for humans: MCPServer sends it to the client
     # as the tool's `description`, and the `expression: str` hint becomes the
     # input schema {"expression": {"type": "string"}}. That text is the model's
     # only clue for when and how to call this tool, so it's prompt engineering.
@@ -79,5 +79,5 @@ def calculator(expression: str) -> str:
 if __name__ == "__main__":
     # Default transport is stdio. This call blocks, serving requests until the
     # client closes the connection. Anything you print() would corrupt the
-    # stdout protocol channel, so don't; FastMCP logs to stderr for you.
+    # stdout protocol channel, so don't; MCPServer logs to stderr for you.
     mcp.run()

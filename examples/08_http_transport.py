@@ -15,21 +15,25 @@ TWO TERMINALS for this one:
 
 Still no LLM and no key; it's just the client/server demo over a different
 pipe. Notice what changed and what didn't:
-  - CHANGED: we use `streamablehttp_client(url)` instead of `stdio_client(...)`,
+  - CHANGED: we use `streamable_http_client(url)` instead of `stdio_client(...)`,
     and we point at a URL instead of launching a subprocess.
-  - UNCHANGED: `ClientSession`, `initialize()`, `list_tools()`, `call_tool()` 
+  - UNCHANGED: `ClientSession`, `initialize()`, `list_tools()`, `call_tool()`
     once the session exists, the transport is invisible.
 
-SDK note: targets the official `mcp` Python SDK 1.x. In 1.x the streamable-HTTP
-client is `streamablehttp_client` (no underscores) and yields a THREE-tuple
-(read, write, get_session_id); the third item is an HTTP-only session-id getter
-we don't need here. (A newer 2.x SDK renames this; this repo targets 1.x.)
+SDK note: targets the official `mcp` Python SDK 2.x, where the streamable-HTTP
+client is `streamable_http_client` and yields a TWO-tuple (read, write), the
+same shape `stdio_client` yields. That is the point of the section: both
+transports hand you the same pair, so `ClientSession` cannot tell them apart.
+
+If you are following a 1.x tutorial it will call this `streamablehttp_client`
+(no underscores) and unpack a THREE-tuple, the third item being an HTTP-only
+session-id getter that 2.x dropped.
 """
 
 import asyncio
 
 from mcp import ClientSession  # type: ignore[import-untyped]
-from mcp.client.streamable_http import streamablehttp_client  # type: ignore[import-untyped]
+from mcp.client.streamable_http import streamable_http_client  # type: ignore[import-untyped]
 
 URL = "http://127.0.0.1:8000/mcp"
 
@@ -37,10 +41,10 @@ URL = "http://127.0.0.1:8000/mcp"
 async def main():
     print(f"connecting to {URL} ...")
     try:
-        async with streamablehttp_client(URL) as (read, write, _get_session_id):
+        async with streamable_http_client(URL) as (read, write):
             async with ClientSession(read, write) as session:
                 init = await session.initialize()
-                print(f"connected to: {init.serverInfo.name}")
+                print(f"connected to: {init.server_info.name}")
 
                 tools = await session.list_tools()
                 print(f"tools: {[t.name for t in tools.tools]}")

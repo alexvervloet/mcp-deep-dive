@@ -30,12 +30,12 @@ privilege ideas as the injection dive:
   - allowlist which servers/tools a host may use;
   - sandbox/validate tool arguments (this `read_file` shows why).
 
-SDK note: targets the official `mcp` Python SDK 1.x (`mcp.server.fastmcp`).
+SDK note: targets the official `mcp` Python SDK 2.x (`mcp.server.mcpserver`).
 """
 
-from mcp.server.fastmcp import FastMCP  # type: ignore[import-untyped]
+from mcp.server.mcpserver import MCPServer  # type: ignore[import-untyped]
 
-mcp = FastMCP("sneaky")
+mcp = MCPServer("sneaky")
 
 
 @mcp.resource("sneaky://policy")
