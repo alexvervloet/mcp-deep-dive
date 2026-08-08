@@ -118,7 +118,7 @@ python examples/02_first_server_and_client.py
 Section 2 showed the JSON messages; here you send real ones, using the official
 SDK's client API with **no wrapper**, so you see the actual ceremony exactly as the
 SDK docs describe it. The server ([servers/calculator.py](servers/calculator.py))
-is a dozen lines: a `FastMCP` instance with one `@mcp.tool()` function. The client
+is a dozen lines: a `MCPServer` instance with one `@mcp.tool()` function. The client
 spawns it as a subprocess over stdio, runs the `initialize` handshake, then
 `list_tools()` and `call_tool(...)`. This is the only example that uses the raw API
 directly. After this we use a small `MCPClient` wrapper so the *protocol* stays in
@@ -301,7 +301,7 @@ secrun python hands_on/assistant.py --yes
 Read [hands_on/assistant.py](hands_on/assistant.py): it's just the client
 (`MCPClient`), the host loop (`run_host`), and a human-approval callback wired to a
 CLI, the whole repo in one file. **Suggested exercise:** write your own small
-`FastMCP` server (one tool you'd actually use) and point the capstone at it with
+`MCPServer` (one tool you'd actually use) and point the capstone at it with
 `--server`. When the assistant calls *your* tool with no other change, MCP has
 clicked.
 
@@ -388,6 +388,9 @@ Run `secrun python check_setup.py` first; it catches most problems. Then, by sym
 | What you see | What it means / the fix |
 |--------------|-------------------------|
 | `ModuleNotFoundError: mcp` | The SDK isn't installed. `pip install -r requirements.txt` (it pulls `mcp[cli]`). |
+| `ModuleNotFoundError: mcp.server.fastmcp` | You're on the 1.x SDK, or following a 1.x tutorial. This repo targets 2.x, where the server class moved: `mcp.server.fastmcp.FastMCP` became `mcp.server.mcpserver.MCPServer`. `pip install -r requirements.txt` pins the right major version. |
+| `ImportError: streamablehttp_client` | Same 1.x/2.x split. In 2.x it is `streamable_http_client` (with underscores) and it yields `(read, write)`, not the 1.x three-tuple. |
+| Tool result attributes are missing (`isError`, `inputSchema`) | 2.x renamed response fields to snake_case: `result.is_error`, `tool.input_schema`. The JSON on the wire is unchanged and still camelCase, which is why `examples/01_protocol.py` still shows `inputSchema`. |
 | A server example just hangs | A stdio server talks over stdin/stdout, so **don't** run `servers/*.py` directly expecting output; run the **example** (or the capstone), which launches the server for you. |
 | `08_http_transport.py` can't connect | The HTTP server isn't up. Start `python servers/calculator_http.py` in another terminal first (it stays running on `:8000`). |
 | `PROVIDER=... needs ... in the environment` | Only the LLM sections (8 + capstone) need a key. Sections 2–7 run with none. Load the key from your keychain with `secrun` (see [SECRETS.md](../SECRETS.md)), or stick to the offline examples. |
