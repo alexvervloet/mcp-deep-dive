@@ -23,7 +23,7 @@ python-dotenv>=1.0.0
 # need none of these.
 
 # OpenAI: used when PROVIDER=openai (chat + function calling).
-openai>=1.30.0
+openai>=2.0,<3
 
 # Anthropic: used when PROVIDER=claude (messages + tool use).
-anthropic>=0.111.0
+anthropic>=0.111.0,<1
