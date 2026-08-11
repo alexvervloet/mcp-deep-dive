@@ -225,6 +225,48 @@ underneath. Rule of thumb: **stdio** for local tools that ship with the host (a
 subprocess on your machine); **streamable HTTP** for a shared service multiple
 hosts connect to over the network.
 
+### Sessions, and giving them up
+
+Going over the network adds one thing stdio never needed. Run the example and
+look past the tool call at the last few lines: the server issued an
+**`Mcp-Session-Id`**, and the client is expected to repeat it on every later
+request. That id points at state living in *one server process*, which is fine
+until you put the server behind a load balancer, because the replica that minted
+the session is the only one that can serve it. Every other replica sees an id it
+has never heard of.
+
+The other setting is one argument:
+
+```bash
+# terminal 1, restarted:
+python servers/calculator_http.py --stateless    # mcp.run(..., stateless_http=True)
+# terminal 2, unchanged:
+python examples/08_http_transport.py
+```
+
+The tool call comes out byte for byte the same. No id is issued, the server keeps
+nothing between requests, and any replica can answer any request, which is the
+property that lets you run the thing as ordinary web infrastructure.
+
+This is the same trade the API itself made, one layer down. The
+[OpenAI dive](https://github.com/alexvervloet/openai-api-deep-dive) opens with
+the model API being stateless so that any server can take your next call, and
+pays for it by making you resend the transcript every turn. Here you pay in
+capability rather than bandwidth:
+
+| | sessions on (default) | `stateless_http=True` |
+|---|---|---|
+| Scaling | sticky, one replica owns the connection | any replica, any request |
+| Resumable streams | yes, with an event store | no |
+| Server-to-client requests (sampling, elicitation) | yes | no, the reply has nowhere to land |
+| Notifications during a call (progress, logging) | yes | yes, they ride that request's own stream |
+
+So the question is not which is better, it's whether your server ever needs to
+talk back outside of answering a call. A calculator does not, and a tool server
+that only computes and returns should default to stateless. A server that asks
+the host's model to sample mid-tool, or that streams a long job you want to
+reconnect to, needs the session and the stickiness that comes with it.
+
 ---
 
 ## 10. Security: MCP + prompt injection
@@ -353,7 +395,7 @@ README.md                   ← this guide
 EXERCISES.md                ← predict-then-run prompts, one per section
 servers/                    ← MCP servers (the capability side)
   calculator.py             ← the minimal one-tool server (stdio)
-  calculator_http.py        ← the same, over streamable HTTP (Section 9)
+  calculator_http.py        ← the same, over streamable HTTP; --stateless (Section 9)
   notes.py                  ← all THREE primitives: tools, resources, prompts
   toolbox.py                ← a realistic multi-tool server (used by the capstone)
   sneaky.py                 ← a deliberately HOSTILE server (Section 10)
@@ -393,6 +435,7 @@ Run `secrun python check_setup.py` first; it catches most problems. Then, by sym
 | Tool result attributes are missing (`isError`, `inputSchema`) | 2.x renamed response fields to snake_case: `result.is_error`, `tool.input_schema`. The JSON on the wire is unchanged and still camelCase, which is why `examples/01_protocol.py` still shows `inputSchema`. |
 | A server example just hangs | A stdio server talks over stdin/stdout, so **don't** run `servers/*.py` directly expecting output; run the **example** (or the capstone), which launches the server for you. |
 | `08_http_transport.py` can't connect | The HTTP server isn't up. Start `python servers/calculator_http.py` in another terminal first (it stays running on `:8000`). |
+| `TypeError: MCPServer.__init__() got an unexpected keyword argument 'host'` (or `port`, `stateless_http`) | Another 1.x/2.x split. Those were constructor settings in 1.x; in 2.x they are arguments to `run()`, because they describe a particular run rather than what the server is. |
 | `PROVIDER=... needs ... in the environment` | Only the LLM sections (8 + capstone) need a key. Sections 2–7 run with none. Load the key from your keychain with `secrun` (see [SECRETS.md](../SECRETS.md)), or stick to the offline examples. |
 | Import errors from `host` / `client` / `servers` | Run from the repo root (`python examples/03_...py`), not from inside a subfolder; the examples add the repo root to `sys.path`. |
 | Claude Desktop doesn't see my server | Use **absolute** paths to the venv's python *and* the script in the config, then fully restart the app. `mcp dev servers/toolbox.py` helps debug locally. |
