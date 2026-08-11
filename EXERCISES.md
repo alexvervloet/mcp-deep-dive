@@ -154,6 +154,35 @@ connect to by URL, so you run the server in one terminal and the client in anoth
 Same `tools/list`/`tools/call`; different transport.
 </details>
 
+**Predict, then run.** Start the server with `--stateless` and run the example
+again. The tool call is identical, and the last block of output changes. Before
+you look: what does the server stop sending, and name one thing a server can no
+longer do without it.
+
+<details><summary>▸ Answer</summary>
+
+It stops issuing an **`Mcp-Session-Id`**. With no session there is nothing tying
+you to one server process, so any replica behind a load balancer can serve any
+request, which is what makes the server deployable as ordinary web infrastructure.
+
+What you lose is anything needing the connection to outlive the request: resumable
+streams, and **server-to-client requests** such as sampling (a tool asking the
+host's model for a completion mid-call). The server can still send, but the
+client's reply would have nowhere to land, so the SDK refuses rather than hangs.
+Notifications sent *during* a call, like progress on a long computation, still
+work, because they ride the response stream of the request that is already open.
+
+The honest rule: a server that only computes and returns should be stateless. A
+server that talks back outside of answering a call needs the session, and pays for
+it with sticky routing.
+</details>
+
+**Do it.** `servers/calculator_http.py` decides its mode from `sys.argv`. That is
+fine for a demo and wrong for a deployment, where the same image runs locally and
+behind a load balancer. Change it to read the mode from an environment variable
+instead, defaulting to stateless, and say in one line why that default is the
+safer one for a server whose tools only compute.
+
 ---
 
 ## Section 10: Security **(offline)**
