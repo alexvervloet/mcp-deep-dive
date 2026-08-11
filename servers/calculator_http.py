@@ -20,9 +20,23 @@ That one-line swap is the whole lesson of the transports section:
 The tools, resources, and prompts you write are IDENTICAL across transports 
 you choose the transport based on WHERE the server runs, not what it does.
 
+The HTTP transport also adds something stdio never needed: a SESSION. On the
+first request the server mints an id, hands it back in an `Mcp-Session-Id`
+response header, and the client repeats it on every later request so the server
+can find the state belonging to that connection. Fine for one process. A problem
+the moment the server sits behind a load balancer, because only the replica that
+minted the session can serve it.
+
+Running with `--stateless` passes `stateless_http=True`, which turns sessions
+off: no id is issued, the server keeps nothing between requests, and any replica
+can answer any request. What you give up is everything that needs a standing
+connection, which in practice means resumable streams and server-initiated
+messages outside a request. Section 9 of the README walks through the tradeoff.
+
 Run it (it starts a server and stays up; Ctrl-C to stop):
 
-    python servers/calculator_http.py
+    python servers/calculator_http.py               # sessions on (the default)
+    python servers/calculator_http.py --stateless   # sessions off
     # then, in another terminal:
     python examples/08_http_transport.py
 
@@ -36,10 +50,14 @@ section).
 
 import ast
 import operator
+import sys
 
 from mcp.server.mcpserver import MCPServer  # type: ignore[import-untyped]
 
-# host/port can be set here; defaults are 127.0.0.1:8000, path /mcp.
+# The constructor takes what the server IS (its name, tools, middleware). Where
+# it listens is a property of a particular run, so `host`, `port`,
+# `streamable_http_path` and `stateless_http` are arguments to `run()` instead.
+# In SDK 1.x they were constructor settings; passing them here now raises.
 mcp = MCPServer("calculator-http")
 
 _OPS = {
@@ -67,4 +85,8 @@ def calculator(expression: str) -> str:
 
 if __name__ == "__main__":
     # The ONLY difference from servers/calculator.py is this transport argument.
-    mcp.run(transport="streamable-http")
+    # The tool above is untouched: whether sessions are on is a deployment
+    # decision, not something the tools you write ever see.
+    stateless = "--stateless" in sys.argv
+    print(f"sessions: {'off (stateless_http=True)' if stateless else 'on (default)'}")
+    mcp.run(transport="streamable-http", stateless_http=stateless)
