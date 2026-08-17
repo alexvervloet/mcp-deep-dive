@@ -111,7 +111,7 @@ def check_provider(env):
         ok(f"PROVIDER = {provider}")
         return provider
     warn(f"PROVIDER = {provider!r} is not recognized.")
-    print("    Set PROVIDER=openai or PROVIDER=claude in .env (only matters for Section 8+).")
+    print("    Set PROVIDER=openai or PROVIDER=claude in .env (only Section 8 + capstone).")
     return None
 
 
@@ -144,7 +144,7 @@ def check_keys(env, provider):
         value = _get(env, name)
         if not value or value == placeholder:
             warn(f"{name} is not set.")
-            print("    Needed only for Section 8+. Store it in your keychain and run under `secrun` then . See SECRETS.md.")
+            print("    Needed only for Section 8 + capstone. Store it in your keychain and run under `secrun`. See SECRETS.md.")
             all_ok = False
         elif not value.startswith(prefix):
             warn(f"{name} is set but doesn't start with '{prefix}'. Double-check it.")
