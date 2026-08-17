@@ -1,6 +1,7 @@
 # The subject of this repo: the official Model Context Protocol Python SDK.
-# Bundles the MCPServer server API (`mcp.server.mcpserver`) and the client
-# (`mcp.client.*`, `ClientSession`).
+# Bundles the MCPServer server API (`mcp.server.mcpserver`) and the high-level
+# `Client` used by the examples. Version 2 implements MCP 2026-07-28: modern
+# requests have no initialize handshake or protocol-level session.
 #
 # The upper bound is deliberate. This repo targets the 2.x API, and 2.0 renamed
 # the server class (`FastMCP` -> `MCPServer`, and the module that holds it) and
