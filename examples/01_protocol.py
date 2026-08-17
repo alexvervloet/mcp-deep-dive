@@ -14,9 +14,12 @@ They talk over **JSON-RPC 2.0**, plain JSON request/response messages, across
 a TRANSPORT (a pipe). The two transports you'll meet: stdio (a local subprocess,
 default in this repo) and streamable HTTP/SSE (a network service; Section 9).
 
-The conversation always starts with a HANDSHAKE: the client sends `initialize`,
-the server replies with its name and CAPABILITIES (which of the three primitives
-it offers). After that, the client can ask for and use:
+Since protocol revision 2026-07-28 there is NO HANDSHAKE and NO protocol
+session. Every request is self-describing: the HTTP header carries the protocol
+version and the request's `_meta` carries client identity/capabilities. A client
+may call `server/discover` to learn capabilities, but discovery is optional.
+
+The client can immediately ask for and use:
 
   TOOLS      tools/list, tools/call           (model-controlled actions)
   RESOURCES  resources/list, resources/read   (app-controlled read-only data)
@@ -40,52 +43,87 @@ def main():
     print("MCP in one page: the messages a client and server exchange")
     print("=" * 70)
 
-    print("\n1) The client opens the connection with a handshake.")
-    show("client -> server  (initialize)", {
+    print("\n1) Optional discovery: learn what the server offers.")
+    show("client -> server  (server/discover)", {
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "initialize",
-        "params": {"protocolVersion": "2025-11-25", "capabilities": {}},
+        "method": "server/discover",
+        "params": {"_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientCapabilities": {},
+            "io.modelcontextprotocol/clientInfo": {
+                "name": "protocol-tour", "version": "1.0.0"
+            }
+        }},
     })
-    show("server -> client  (here's who I am + what I offer)", {
+    show("server -> client  (supported versions + capabilities)", {
         "jsonrpc": "2.0",
         "id": 1,
         "result": {
-            "serverInfo": {"name": "calculator", "version": "1.0.0"},
+            "supportedVersions": ["2026-07-28"],
             "capabilities": {"tools": {}},
+            "resultType": "complete",
+            "ttlMs": 60000,
+            "cacheScope": "public",
         },
     })
 
     print("\n2) The client asks what tools exist.")
-    show("client -> server  (tools/list)", {
+    show("client -> server  (tools/list; self-describing)", {
         "jsonrpc": "2.0", "id": 2, "method": "tools/list",
+        "params": {"_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientCapabilities": {},
+            "io.modelcontextprotocol/clientInfo": {
+                "name": "protocol-tour", "version": "1.0.0"
+            }
+        }},
     })
     show("server -> client  (a tool = name + description + inputSchema)", {
         "jsonrpc": "2.0", "id": 2,
-        "result": {"tools": [{
-            "name": "calculator",
-            "description": "Evaluate a basic arithmetic expression...",
-            "inputSchema": {
-                "type": "object",
-                "properties": {"expression": {"type": "string"}},
-                "required": ["expression"],
-            },
-        }]},
+        "result": {
+            "tools": [{
+                "name": "calculator",
+                "description": "Evaluate a basic arithmetic expression...",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {"expression": {"type": "string"}},
+                    "required": ["expression"],
+                },
+            }],
+            "resultType": "complete", "ttlMs": 60000, "cacheScope": "public",
+        },
     })
 
     print("\n3) The client calls a tool. (A model would *ask* the host to do this.)")
     show("client -> server  (tools/call)", {
         "jsonrpc": "2.0", "id": 3, "method": "tools/call",
-        "params": {"name": "calculator", "arguments": {"expression": "6 * 7"}},
+        "params": {
+            "name": "calculator",
+            "arguments": {"expression": "6 * 7"},
+            "_meta": {
+                "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+                "io.modelcontextprotocol/clientCapabilities": {},
+                "io.modelcontextprotocol/clientInfo": {
+                    "name": "protocol-tour", "version": "1.0.0"
+                },
+            },
+        },
     })
     show("server -> client  (result as content blocks)", {
         "jsonrpc": "2.0", "id": 3,
-        "result": {"content": [{"type": "text", "text": "42"}], "isError": False},
+        "result": {
+            "content": [{"type": "text", "text": "42"}],
+            "isError": False,
+            "resultType": "complete",
+        },
     })
 
     print("\n" + "-" * 70)
     print("That's it. Resources (resources/list + resources/read) and prompts")
     print("(prompts/list + prompts/get) follow the same request/response shape.")
+    print("Over HTTP, MCP-Protocol-Version, Mcp-Method, and (when applicable)")
+    print("Mcp-Name headers make the request routable without parsing its body.")
     print("You will NOT hand-write this JSON; the SDK does it. But every example")
     print("from here on is just these messages flying over a pipe.")
     print("\nNext: python examples/02_first_server_and_client.py  (real messages)")
