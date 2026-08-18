@@ -484,6 +484,10 @@ any order; this sequence builds naturally:
 - [Architecture](https://github.com/alexvervloet/architecture-deep-dive): the seams between the components, each decision measured rather than asserted
 - [Professional Tools](https://github.com/alexvervloet/professional-tools-deep-dive): rebuild each from-scratch primitive with the tool professionals reach for, and measure both
 
+And the whole series lands in one codebase in the
+[capstone](https://github.com/alexvervloet/deep-dive-capstone): a codebase Q&A tool
+built step by step, one tag per dive.
+
 **MCP is a bonus dive in the series.** It slots most naturally right after
 [Agents](https://github.com/alexvervloet/agents-deep-dive) (#6), since Section 8 here is that
 dive's loop with tools served over MCP, and its security section (§10) builds on
