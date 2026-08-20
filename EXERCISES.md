@@ -187,7 +187,7 @@ and `"public"` in `examples/11_cacheable_catalogs.py`?
 `private` entries may only be reused inside the authorization partition that
 produced them. `public` asserts the result is identical and safe to share across
 principals. A wrong public label can leak tenant-specific tools or resources, so
-the server—not the client—must classify it honestly.
+the server, not the client, must classify it honestly.
 </details>
 
 ---

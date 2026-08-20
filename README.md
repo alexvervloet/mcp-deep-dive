@@ -264,8 +264,8 @@ that loop in example 10.
 Discovery results now carry **`ttlMs`** and **`cacheScope`**. Clients can reuse
 fresh tool/resource/prompt catalogs; `private` data stays in one authorization
 partition, while genuinely identical `public` data may be shared. Example 11
-makes the cache hit visible. The full migration matrix—including Tasks,
-extensions, authorization hardening, and deprecated features—is in
+makes the cache hit visible. The full migration matrix, including Tasks,
+extensions, authorization hardening, and deprecated features, is in
 [PROTOCOL_2026.md](PROTOCOL_2026.md).
 
 ---
