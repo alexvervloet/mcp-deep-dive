@@ -58,7 +58,7 @@ pip install -r requirements.txt
 # 3. Copy the env file: offline sections need no key; §8 + capstone do
 cp .env.example .env
 #    (Real provider instead of the mock? Its key goes in your OS keychain,
-#     not .env: see ../SECRETS.md, then run scripts as `secrun python ...`.)
+#     not .env: see ../docs/SECRETS.md, then run scripts as `secrun python ...`.)
 
 # 4. Confirm everything is wired up (makes no API call, costs nothing)
 secrun python check_setup.py
@@ -442,7 +442,7 @@ Run `secrun python check_setup.py` first; it catches most problems. Then, by sym
 | A server example just hangs | A stdio server talks over stdin/stdout, so **don't** run `servers/*.py` directly expecting output; run the **example** (or the capstone), which launches the server for you. |
 | `08_http_transport.py` can't connect | The HTTP server isn't up. Start `python servers/calculator_http.py` in another terminal first (it stays running on `:8000`). |
 | `TypeError: MCPServer.__init__() got an unexpected keyword argument 'host'` (or `port`, `stateless_http`) | Another 1.x/2.x split. Transport options go to `run()`. Note that `stateless_http` only affects legacy clients; modern MCP is session-free already. |
-| `PROVIDER=... needs ... in the environment` | Only Section 8 and the capstone need a key; the protocol, transport, MRTR, cache, and security examples are offline. Load the key from your keychain with `secrun` (see [SECRETS.md](../SECRETS.md)), or stick to the offline examples. |
+| `PROVIDER=... needs ... in the environment` | Only Section 8 and the capstone need a key; the protocol, transport, MRTR, cache, and security examples are offline. Load the key from your keychain with `secrun` (see [SECRETS.md](../docs/SECRETS.md)), or stick to the offline examples. |
 | Import errors from `host` / `client` / `servers` | Run from the repo root (`python examples/03_...py`), not from inside a subfolder; the examples add the repo root to `sys.path`. |
 | Claude Desktop doesn't see my server | Use **absolute** paths to the venv's python *and* the script in the config, then fully restart the app. `mcp dev servers/toolbox.py` helps debug locally. |
 | `SyntaxError` / odd type errors on startup | You're likely on Python 3.9 or older; this repo needs 3.10+. `check_setup.py` confirms your version. |
