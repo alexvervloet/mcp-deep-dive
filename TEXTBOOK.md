@@ -8,7 +8,7 @@
 
 By 2024, a pattern had set in across the AI industry, and it was wasteful in a familiar way. Every team building a tool-using assistant was writing the same glue over and over. You wanted your model to read from Google Drive, so you wrote a Drive integration. You wanted it to query your Postgres database, so you wrote a database integration. You wanted GitHub, Slack, a filesystem, a ticketing system, and you wrote each one, in your framework, against your model, in your particular way. The team down the hall, building a different assistant, wrote all of the same integrations again, differently.
 
-Multiply it out and the shape of the waste becomes clear. If there are M applications that want tools and N tools worth connecting to, the naive world requires roughly M times N integrations, each one bespoke, each one maintained separately, each one breaking on its own schedule. Every new tool has to be wired into every app; every new app has to re-wire every tool. This is not a new kind of problem, and that is the good news, because the industry has solved this exact shape before.
+Multiply it out and the shape of the waste becomes clear. If there are M applications that want tools and N tools worth connecting to, the naive world requires roughly M times N integrations, each one hand-written, each one maintained separately, each one breaking on its own schedule. Every new tool has to be wired into every app; every new app has to re-wire every tool. This is not a new kind of problem, and that is the good news, because the industry has solved this exact shape before.
 
 The Model Context Protocol, which Anthropic introduced in November 2024, is the standard answer to the M-times-N problem. Its one big idea is small and, once you see it, almost obvious:
 
@@ -66,7 +66,7 @@ Removing the session also removes the hidden back-channel through which an older
 
 ## 14.6 Convenience is a trust decision
 
-Here is the part of MCP that deserves the most careful thought, and it is the part the marketing tends to skip. When your host connects to a server, two things flow across that connection that should make a security-minded person pause.
+Here is what deserves the most careful thought in MCP, and it is what the marketing tends to skip. When your host connects to a server, two things flow across that connection that should make a security-minded person pause.
 
 First, the server's tool descriptions and resource contents flow *into your model's context*. Remember from Chapter 7 that a model cannot reliably distinguish instructions from data, and that a tool description is prompt text the model reads. A malicious server can write a tool description that is really an attack, an instruction crafted to hijack the model the moment the host lists the available tools. The model reads it as guidance. Second, the model's tool calls get *executed by your host*. A hostile server can return a tool result that smuggles in instructions, and it can offer tools whose real purpose is not their stated one.
 
@@ -80,7 +80,7 @@ And it closes a loop this course has been building toward. The Agents dive (Chap
 
 ## 14.8 Where this chapter leaves you
 
-MCP is, in the end, an unglamorous idea doing important work, which is the best kind of infrastructure. It is not intelligence; the intelligence is in the model. It is not new; it copies the LSP and ODBC playbook. It is not a product; it is a protocol, a shared agreement about how a program that has tools talks to a program that has a model. But that agreement is what turns a thousand bespoke integrations into a marketplace, and it arrived at the moment the AI ecosystem most needed a common connector.
+MCP is, in the end, an unglamorous idea doing important work, which is the best kind of infrastructure. It is not intelligence; the intelligence is in the model. It is not new; it copies the LSP and ODBC playbook. It is not a product; it is a protocol, a shared agreement about how a program that has tools talks to a program that has a model. But that agreement is what turns a thousand hand-written integrations into a marketplace, and it arrived at the moment the AI ecosystem most needed a common connector.
 
 You leave this chapter with three durable takeaways. The vocabulary: host contains client, client connects to server, server has no model. The design insight: the three primitives are divided by who controls them, model and application and user, not by what they technically are. And the caution that outranks the convenience: every server you connect is untrusted code and untrusted text, so the security posture from Chapter 7 travels with it. The next time an assistant gains a capability you did not build into it, you will know the shape of the plumbing underneath, and you will know which questions to ask before you trust it.
 
