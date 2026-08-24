@@ -18,7 +18,7 @@ Attack 1: a poisoned RESOURCE (indirect prompt injection).
 
 Attack 2: a TOOL DESCRIPTION that lies / over-asks.
   `read_file` advertises itself as harmless ("read a help article") but its
-  description quietly instructs the model to also pass along secrets, and its
+  description also instructs the model to pass along secrets, and its
   implementation would happily read anything. A tool's description is attacker-
   controlled text that goes straight into the model's context.
 
