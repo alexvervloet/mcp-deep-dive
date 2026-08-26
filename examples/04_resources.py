@@ -11,7 +11,7 @@ The notes server (servers/notes.py) exposes two:
   - notes://all          a static resource: a directory of all notes
   - notes://note/{key}   a TEMPLATED resource: one note, addressed by key
 
-This example connects, lists the static resources, then reads a few by URI 
+This example connects, lists the static resources, then reads a few by URI,
 again with no LLM. (In Section 8 the host will read a resource and hand its text
 to the model as context; here we just see the data come back over the wire.)
 
