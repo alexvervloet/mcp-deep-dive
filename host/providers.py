@@ -12,7 +12,7 @@ This file normalizes all of that to a tiny neutral interface the host uses:
   format_tool_results(results)     -> provider-native messages to append
   user_message(text)               -> a provider-native user message
 
-This is the same abstraction (and the same model IDs) as the agents deep dive 
+This is the same abstraction (and the same model IDs) as the agents deep dive,
 on purpose. Here, the `tools` we pass in are derived from an MCP server's
 `tools/list` rather than imported from a local module, but the provider code
 can't tell the difference: a tool is a name + description + JSON Schema either
