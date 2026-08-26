@@ -19,7 +19,7 @@ Control logic carried over from the agents dive, because a tool over a protocol
 is still a tool you must run safely:
   - max_steps: a hard ceiling so a confused model can't loop forever.
   - approval:  side-effecting tools (here, anything whose name is in
-               `dangerous_tools`) can be gated behind an `approve` callback 
+               `dangerous_tools`) can be gated behind an `approve` callback,
                the human-in-the-loop. This matters MORE with MCP, because the
                server is code you may not have written.
   - errors:    a failing tool returns its error text as the result, so the model
