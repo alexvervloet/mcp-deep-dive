@@ -3,7 +3,7 @@ examples/02_first_server_and_client.py: the raw SDK, once (offline, no key).
 
 Example 01 showed the JSON messages; here we send real ones, using the official
 SDK's client API with NO wrapper, so you see the actual ceremony exactly as the
-SDK docs describe it. This is the only example that uses the raw API directly 
+SDK docs describe it. This is the only example that uses the raw API directly;
 after this we use the small `MCPClient` wrapper to keep the lessons uncluttered.
 
 What happens:
