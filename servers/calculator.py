@@ -1,7 +1,7 @@
 """
 servers/calculator.py: your first MCP server: one tool, over stdio.
 
-This is the smallest useful MCP server. It exposes exactly ONE tool 
+This is the smallest useful MCP server. It exposes exactly ONE tool:
 `calculator`, and nothing else. Everything that makes it an "MCP server" comes
 from the official SDK's high-level `MCPServer` class:
 
