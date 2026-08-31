@@ -16,7 +16,7 @@ mcp[cli]>=2.0,<3
 
 # Loads variables from a .env file (like OPENAI_API_KEY) into the environment.
 # Only needed once you put an LLM in the loop (Section 8 onward).
-python-dotenv>=1.0.0
+python-dotenv>=1.0.0,<2
 
 # --- Provider SDKs ---
 # You only strictly need the one matching your PROVIDER (see .env), and ONLY
