@@ -13,7 +13,7 @@ server's `tools/list`, handed those to the provider exactly like local tools,
 and the loop runs unchanged. That invisibility is the reason MCP exists: write
 the server once, and any model on any provider can use it.
 
-Provider-agnostic: set PROVIDER in .env and load the key via secrun (see SECRETS.md).
+Provider-agnostic: set PROVIDER in .env and load the key via secrun (see ../docs/SECRETS.md).
 
     # one-off question that needs a tool
     secrun python examples/07_llm_calls_mcp_tools.py

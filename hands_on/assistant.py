@@ -15,7 +15,7 @@ It pulls together every earlier section:
   - human approval for risky tools    (the security lesson, Section 11)
   - multi-turn memory                 (one shared history across turns)
 
-Provider-agnostic: set PROVIDER in .env and load the key via secrun (see SECRETS.md).
+Provider-agnostic: set PROVIDER in .env and load the key via secrun (see ../docs/SECRETS.md).
 The server and tool-calling are free; only the model's turns cost anything.
 
     # interactive chat (Ctrl-D or "quit" to exit):

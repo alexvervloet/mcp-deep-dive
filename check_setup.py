@@ -144,7 +144,7 @@ def check_keys(env, provider):
         value = _get(env, name)
         if not value or value == placeholder:
             warn(f"{name} is not set.")
-            print("    Needed only for Section 8 + capstone. Store it in your keychain and run under `secrun`. See SECRETS.md.")
+            print("    Needed only for Section 8 + capstone. Store it in your keychain and run under `secrun`. See ../docs/SECRETS.md.")
             all_ok = False
         elif not value.startswith(prefix):
             warn(f"{name} is set but doesn't start with '{prefix}'. Double-check it.")
@@ -169,7 +169,7 @@ def main():
         print("    python examples/01_protocol.py")
         print("    python examples/03_client_calls_tool.py   # a server and client actually talk")
         if not keys:
-            print("\nWhen you reach Section 8 (LLM in the loop), set PROVIDER in .env and load its key via secrun . See SECRETS.md.")
+            print("\nWhen you reach Section 8 (LLM in the loop), set PROVIDER in .env and load its key via secrun . See ../docs/SECRETS.md.")
         return 0
     print(_c("Not ready yet. Fix the ✗ items above, then run this again.", "1;31"))
     print("(The ✗ items are the hard requirements: Python 3.10+ and the `mcp` SDK.)")
