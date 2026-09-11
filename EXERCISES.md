@@ -1,6 +1,6 @@
 # Exercises: make the learning stick
 
-Reading code teaches you less than *predicting* what it will do and then checking.
+Reading code teaches you less than *predicting* what it'll do and then checking.
 This file turns each section of the [README](README.md) into a few quick
 active-recall prompts.
 
@@ -28,7 +28,7 @@ contains a model.
   just answers requests. The model lives in the host.
 </details>
 
-**Recall.** The three primitives differ by *who is in control*. Match tool /
+**Recall.** The three primitives differ by *who's in control*. Match tool /
 resource / prompt to model-controlled / app-controlled / user-controlled.
 
 <details><summary>▸ Answer</summary>
@@ -50,8 +50,8 @@ of discovering and running a tool?
 
 `client.list_tools()` (the `tools/list` request, to discover what's available) and
 `client.call_tool(name, args)` (the `tools/call` request, to run one). The
-high-level `Client` owns the stdio transport and selects MCP `2026-07-28`; there
-is no initialize handshake on the modern path.
+high-level `Client` owns the stdio transport and selects MCP `2026-07-28`; there's
+no initialize handshake on the modern path.
 </details>
 
 ---
@@ -161,14 +161,14 @@ they for, and why should the response have no `Mcp-Session-Id`?
 
 `MCP-Protocol-Version` selects the wire contract. `Mcp-Method` and `Mcp-Name`
 let a gateway, rate limiter, or WAF route and meter the call without parsing the
-JSON body. MCP `2026-07-28` removed protocol sessions, so the server does not
+JSON body. MCP `2026-07-28` removed protocol sessions, so the server doesn't
 issue `Mcp-Session-Id`; every request is self-contained and may land on any
 replica. Headers remain untrusted input, so a production server verifies that
 they agree with the parsed JSON-RPC request.
 </details>
 
 **Predict, then run.** In `examples/10_multi_round_trip.py`, the tool needs a
-quantity that was not in the original call. With no server-to-client back-channel,
+quantity that wasn't in the original call. With no server-to-client back-channel,
 how does the answer get back to the server?
 
 <details><summary>▸ Answer</summary>
@@ -179,7 +179,7 @@ tool call with `inputResponses` plus that exact state. The SDK's `Resolve(...)`
 and high-level `Client` drive these MRTR rounds automatically.
 </details>
 
-**Recall.** What is the security difference between `cacheScope: "private"`
+**Recall.** What's the security difference between `cacheScope: "private"`
 and `"public"` in `examples/11_cacheable_catalogs.py`?
 
 <details><summary>▸ Answer</summary>
