@@ -2,7 +2,7 @@
 
 This repository teaches the current MCP protocol revision, `2026-07-28`. The
 one-line operational change is significant: **the protocol core is stateless**.
-There is no `initialize`/`initialized` handshake and no `Mcp-Session-Id` on the
+There's no `initialize`/`initialized` handshake and no `Mcp-Session-Id` on the
 modern path. Each request carries what the server needs to handle it.
 
 The official Python SDK v2 `Client` uses modern MCP by default. In `mode="auto"`
@@ -30,12 +30,12 @@ Content-Type: application/json
   route the call without parsing JSON.
 - `_meta` carries protocol version and client capabilities on every request;
   client identity should be included as well.
-- `server/discover` is useful for eager capability discovery, but it is not a
+- `server/discover` is useful for eager capability discovery, but it isn't a
   prerequisite for `tools/list`, `resources/read`, or `tools/call`.
 
 Application state is still allowed. Make it explicit: a tool can mint a job,
-cart, or workflow handle and require that handle on later calls. Do not hide
-application state in a transport session that the model cannot see.
+cart, or workflow handle and require that handle on later calls. Don't hide
+application state in a transport session that the model can't see.
 
 ## What replaced server-to-client requests
 
@@ -72,10 +72,10 @@ a verified principal, not request-controlled input. See
 
 ## Extensions, Tasks, and deprecations
 
-The 2026 revision formalizes extensions so optional features do not expand the
+The 2026 revision formalizes extensions so optional features don't expand the
 protocol core. **Tasks** are an extension for durable, pollable work; use them
 for jobs whose lifetime should outlive one tool response. Negotiate extensions
-and ignore ones a peer does not advertise.
+and ignore ones a peer doesn't advertise.
 
 Roots, client sampling, and MCP-level logging are deprecated across protocol
 versions. `ping` is removed from modern MCP. Resource subscription uses
@@ -90,7 +90,7 @@ versions. `ping` is removed from modern MCP. Resource subscription uses
   deprecated and remains only for compatibility.
 - Keep HTTP transport protections: TLS, exact Host and Origin allowlists,
   audience validation, least-privilege scopes, and per-tool authorization.
-- Headers improve routing and policy enforcement, but they are untrusted input;
+- Headers improve routing and policy enforcement, but they're untrusted input;
   verify that they agree with the parsed JSON-RPC body.
 
 ## Migration checklist
@@ -105,7 +105,7 @@ versions. `ping` is removed from modern MCP. Resource subscription uses
 6. Add honest `ttlMs`/`cacheScope` hints and authorization-safe cache partitions.
 7. Share request-state signing keys and notification infrastructure across
    replicas when those features are used.
-8. Serve legacy clients deliberately during migration; do not mistake
+8. Serve legacy clients deliberately during migration; don't mistake
    `stateless_http=True` for the modern protocol switch. It only affects the
    SDK's legacy HTTP path.
 
