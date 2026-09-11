@@ -1,14 +1,14 @@
 # MCP (Model Context Protocol): A Guided Deep Dive
 
-A hands-on playground for learning the **Model Context Protocol** from the ground up. It
-is the open standard for handing an LLM tools, data, and prompts from a separate process.
+A hands-on playground for learning the **Model Context Protocol** from the ground up. It's
+the open standard for handing an LLM tools, data, and prompts from a separate process.
 You'll build MCP servers, write a client that talks to them, and finally let a model drive
 those tools over the protocol, understanding every moving part along the way. The three
 primitives (tools, resources, prompts), self-describing JSON-RPC requests, stdio against
 HTTP transports, MRTR, cacheable discovery, wiring a server into a real host, and the
 security model. It targets MCP `2026-07-28` and the official Python SDK v2.
 
-Here is what makes this repo click. Most of it runs offline and free. A server and a client
+Here's what makes this repo click. Most of it runs offline and free. A server and a client
 talk to each other with no model involved, so Sections 2 through 7 (your first server, the
 client, resources, prompts, a multi-tool server) need no API key at all. You only need a
 provider for Section 8 and the capstone, where an LLM host chooses tools.
@@ -32,7 +32,7 @@ each section.
 > process. Write the server once, and any MCP-speaking client or host can discover and use
 > it.**
 
-That is the whole repo. Before MCP, every app re-implemented its own tools and glued them
+That's the whole repo. Before MCP, every app re-implemented its own tools and glued them
 to its own model in its own way. MCP makes the connector standard. A server exposes
 capabilities. A client, sitting inside a host like Claude Desktop, an IDE, or the capstone
 here, connects and uses them over plain JSON-RPC. The model never knows or cares where a
@@ -86,7 +86,7 @@ python examples/01_protocol.py
 MCP is a small, boring idea, and the vocabulary is worth getting straight before you launch
 anything.
 
-- **Host.** The app the user interacts with, whether that is Claude Desktop, an IDE, or the
+- **Host.** The app the user interacts with, whether that's Claude Desktop, an IDE, or the
   capstone here. It contains one or more clients.
 - **Client.** A connector inside the host that holds one connection to one server and
   speaks the protocol.
@@ -151,7 +151,7 @@ python examples/04_resources.py
 A tool is something the model calls to act. A resource is read-only data the
 server publishes by URI, closer to a GET endpoint than a function call. The distinction is
 about control. Your application decides to read a resource and put its contents into the
-model's context. The model does not invoke it. The [notes server](servers/notes.py) exposes
+model's context. The model doesn't invoke it. The [notes server](servers/notes.py) exposes
 a static resource, `notes://all`, and a templated one, `notes://note/{key}`. The example
 lists and reads them, still with no LLM.
 
@@ -198,8 +198,8 @@ The first example that costs money. Everything before it was offline. Now a mode
 the MCP tools. The host lists the server's tools, describes them to the model, and when the
 model asks to call one, the host runs it over the protocol and feeds the result back. This
 is the agent loop from the Agents deep dive with one change: the tools live in a separate
-process behind MCP. And the model has no idea the tools came from an MCP server. To it they
-are names, descriptions, and schemas. That invisibility is the reason MCP exists. The loop
+process behind MCP. And the model has no idea the tools came from an MCP server. To it they're
+names, descriptions, and schemas. That invisibility is the reason MCP exists. The loop
 lives in [host/loop.py](host/loop.py), and it carries over the agent-dive safety logic: a
 `max_steps` ceiling, approval for side-effecting tools, and in-band error results so a
 failing tool doesn't crash the host.
@@ -216,7 +216,7 @@ python examples/08_http_transport.py
 ```
 
 The stdio examples launched the server themselves as a subprocess. An HTTP server is
-different. It is already running somewhere and you connect to it by URL. Same tools, same
+different. It's already running somewhere and you connect to it by URL. Same tools, same
 `tools/list` and `tools/call`, with a network transport underneath. Rule of thumb: stdio
 for local tools that ship with the host as a subprocess on your machine, streamable HTTP
 for a shared service that several hosts connect to over the network.
@@ -230,12 +230,12 @@ request's `_meta` carries client identity/capabilities. The response has **no
 `Mcp-Session-Id`**: any replica can serve the next request without sticky routing
 or a shared protocol-session store.
 
-This does not ban application state. Make state explicit instead. A tool can mint a
+This doesn't ban application state. Make state explicit instead. A tool can mint a
 workflow or job handle and require the model to pass it back later. The handle is visible
 in the tool contract instead of hidden in transport state.
 
 `stateless_http=True` still exists in SDK v2, but only changes how the server
-supports pre-2026 legacy clients. It is not the switch for modern traffic; modern
+supports pre-2026 legacy clients. It isn't the switch for modern traffic; modern
 MCP is already self-contained.
 
 ### Multi-round trips and cacheable catalogs
@@ -282,7 +282,7 @@ can see the malice in the raw data, which is the whole point.
 
 ## 11. Wiring your server into a real host
 
-Here is what a standard protocol buys you. A server you wrote here works in real hosts
+Here's what a standard protocol buys you. A server you wrote here works in real hosts
 unchanged. To use [servers/toolbox.py](servers/toolbox.py) in Claude Desktop, add it to the
 MCP config in `claude_desktop_config.json`:
 
@@ -333,7 +333,7 @@ secrun python hands_on/assistant.py --yes
 
 Read [hands_on/assistant.py](hands_on/assistant.py). It's the client (`MCPClient`), the
 host loop (`run_host`), and a human-approval callback wired to a CLI. The whole repo in one
-file. **Suggested exercise:** write your own small `MCPServer` with one tool you would
+file. **Suggested exercise:** write your own small `MCPServer` with one tool you'd
 actually use, and point the capstone at it with `--server`. When the assistant calls your
 tool with no other change, MCP has clicked.
 
@@ -359,7 +359,7 @@ more scale.
 
 ## From teaching code to production
 
-The teaching shortcuts here are exactly what you would harden once an MCP host sits on a
+The teaching shortcuts here are exactly what you'd harden once an MCP host sits on a
 live path.
 
 | This repo's teaching shortcut | In production |
@@ -425,7 +425,7 @@ Run `secrun python check_setup.py` first; it catches most problems. Then, by sym
 |--------------|-------------------------|
 | `ModuleNotFoundError: mcp` | The SDK isn't installed. `pip install -r requirements.txt` (it pulls `mcp[cli]`). |
 | `ModuleNotFoundError: mcp.server.fastmcp` | You're on the 1.x SDK, or following a 1.x tutorial. This repo targets 2.x, where the server class moved: `mcp.server.fastmcp.FastMCP` became `mcp.server.mcpserver.MCPServer`. `pip install -r requirements.txt` pins the right major version. |
-| Code calls `ClientSession.initialize()` | That is a legacy protocol path. Use the high-level `Client`; its default auto mode selects `2026-07-28` and falls back only for an old server. |
+| Code calls `ClientSession.initialize()` | That's a legacy protocol path. Use the high-level `Client`; its default auto mode selects `2026-07-28` and falls back only for an old server. |
 | Tool result attributes are missing (`isError`, `inputSchema`) | 2.x renamed response fields to snake_case: `result.is_error`, `tool.input_schema`. The JSON on the wire is unchanged and still camelCase, which is why `examples/01_protocol.py` still shows `inputSchema`. |
 | A server example just hangs | A stdio server talks over stdin/stdout, so **don't** run `servers/*.py` directly expecting output; run the **example** (or the capstone), which launches the server for you. |
 | `08_http_transport.py` can't connect | The HTTP server isn't up. Start `python servers/calculator_http.py` in another terminal first (it stays running on `:8000`). |
