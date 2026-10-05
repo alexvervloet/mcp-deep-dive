@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 
 # Same model IDs as the sibling DeepDives: don't invent new ones.
-_OPENAI_CHAT = "gpt-5.4-nano"
+_OPENAI_CHAT = "gpt-6-luna"
 _CLAUDE_CHAT = "claude-haiku-4-5"
 _KEYS = {"openai": ["OPENAI_API_KEY"], "claude": ["ANTHROPIC_API_KEY"]}
 
@@ -138,7 +138,10 @@ def run_turn(system: str, history: list, tool_schema: list) -> Turn:
     if p == "openai":
         messages = [{"role": "system", "content": system}, *history]
         resp = _openai_client().chat.completions.create(
-            model=_OPENAI_CHAT, messages=messages, tools=tool_schema or None  # type: ignore[arg-type]
+            model=_OPENAI_CHAT, messages=messages, tools=tool_schema or None,  # type: ignore[arg-type]
+            # gpt-6-luna reasons by default, and on chat completions it rejects
+            # function tools unless reasoning is off. "none" turns it off.
+            reasoning_effort="none",
         )
         msg = resp.choices[0].message
         calls = []
