@@ -61,7 +61,7 @@ cp .env.example .env
 secrun python check_setup.py
 ```
 
-The `mcp` SDK and Python 3.10+ are required for everything. A `PROVIDER` and its key are
+The `mcp` SDK and Python 3.11+ are required for everything. A `PROVIDER` and its key are
 required only for the LLM-in-the-loop sections, Section 8 and the capstone.
 
 | `PROVIDER` | Used for | Key needed |
@@ -433,7 +433,7 @@ Run `secrun python check_setup.py` first; it catches most problems. Then, by sym
 | `PROVIDER=... needs ... in the environment` | Only Section 8 and the capstone need a key; the protocol, transport, MRTR, cache, and security examples are offline. Load the key from your keychain with `secrun` (see [SECRETS.md](../docs/SECRETS.md)), or stick to the offline examples. |
 | Import errors from `host` / `client` / `servers` | Run from the repo root (`python examples/03_...py`), not from inside a subfolder; the examples add the repo root to `sys.path`. |
 | Claude Desktop doesn't see my server | Use **absolute** paths to the venv's python *and* the script in the config, then fully restart the app. `mcp dev servers/toolbox.py` helps debug locally. |
-| `SyntaxError` / odd type errors on startup | You're likely on Python 3.9 or older; this repo needs 3.10+. `check_setup.py` confirms your version. |
+| `SyntaxError` / odd type errors on startup | You're likely on Python 3.10 or older; this repo needs 3.11+. `check_setup.py` confirms your version. |
 
 Still stuck? Every file is small and self-contained. Open it, read the docstring
 at the top, and run the matching example. [client/mcp_client.py](client/mcp_client.py)
