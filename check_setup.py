@@ -8,7 +8,7 @@ your chosen PROVIDER, and the API key that provider needs, and tells you
 exactly what to fix. Makes NO API calls. Uses only the standard library, so it
 runs even before `pip install`.
 
-Note the split: the `mcp` SDK and a 3.10+ Python are required for EVERYTHING.
+Note the split: the `mcp` SDK and a 3.11+ Python are required for EVERYTHING.
 A PROVIDER and its key are required ONLY for the LLM-in-the-loop sections
 (8 + the capstone). The whole point of MCP-first learning is that a server and
 a client can talk with no model at all, so this check will still cheer you on
@@ -81,10 +81,10 @@ PROVIDER_KEYS = {
 def check_python():
     print("Python version")
     major, minor = sys.version_info[:2]
-    if (major, minor) >= (3, 10):
-        ok(f"Python {major}.{minor} (3.10+ required by the mcp SDK)")
+    if (major, minor) >= (3, 11):
+        ok(f"Python {major}.{minor} (3.11+ required; 3.10 reached end of life)")
         return True
-    fail(f"Python {major}.{minor}: this repo needs Python 3.10 or newer.")
+    fail(f"Python {major}.{minor}: this repo needs Python 3.11 or newer (3.10 reached end of life on 2026-10-01).")
     print("    Install a newer Python from https://www.python.org/downloads/")
     return False
 
@@ -172,7 +172,7 @@ def main():
             print("\nWhen you reach Section 8 (LLM in the loop), set PROVIDER in .env and load its key via secrun . See ../docs/SECRETS.md.")
         return 0
     print(_c("Not ready yet. Fix the ✗ items above, then run this again.", "1;31"))
-    print("(The ✗ items are the hard requirements: Python 3.10+ and the `mcp` SDK.)")
+    print("(The ✗ items are the hard requirements: Python 3.11+ and the `mcp` SDK.)")
     return 1
 
 
